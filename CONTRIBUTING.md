@@ -6,7 +6,7 @@
 
 ### 报告问题
 
-在 [GitHub Issues](https://github.com/your-username/codeflow-framework/issues) 中提交 Bug 报告或功能请求。
+在 [GitHub Issues](https://github.com/wwwweeia/codeflow-framework/issues) 中提交 Bug 报告或功能请求。
 
 ### 提交代码
 

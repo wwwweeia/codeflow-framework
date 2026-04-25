@@ -88,7 +88,7 @@ export default defineConfig({
       },
       {
         text: 'GitHub',
-        link: 'https://github.com/your-username/codeflow-framework',
+        link: 'https://github.com/wwwweeia/codeflow-framework',
       },
     ],
 
@@ -234,7 +234,7 @@ export default defineConfig({
     // ── 编辑链接 ──
     editLink: {
       pattern:
-        'https://github.com/your-username/codeflow-framework/edit/main/docs/:path',
+        'https://github.com/wwwweeia/codeflow-framework/edit/main/docs/:path',
       text: '在 GitHub 上编辑此页面',
     },
 

@@ -36,7 +36,7 @@ done
 WEBHOOK_URL="${FEEDBACK_WEBHOOK:-}"
 
 # 框架 GitHub 仓库（Issue 统一创建在框架仓库，便于集中管理）
-FRAMEWORK_REPO="${FRAMEWORK_FEEDBACK_REPO:-your-username/codeflow-framework}"
+FRAMEWORK_REPO="${FRAMEWORK_FEEDBACK_REPO:-wwwweeia/codeflow-framework}"
 
 # ─── 颜色输出 ───────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'

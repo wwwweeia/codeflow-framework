@@ -294,7 +294,7 @@
 
 **仓库迁移与重命名**
 - 仓库名称：`codeflow-framework` → `codeflow-framework`
-- 仓库地址：`github.com/your-username/ai.kg/ai/codeflow-framework` → `github.com/your-username/codeflow-framework`
+- 仓库地址：`github.com/wwwweeia/ai.kg/ai/codeflow-framework` → `github.com/wwwweeia/codeflow-framework`
 - 所有 Stub Marker 关键词同步更新：`codeflow-framework:core` → `codeflow-framework:core`
 - 所有脚本、文档、模板中的路径引用同步更新
 
@@ -302,7 +302,7 @@
 
 > ⚠️ **本次为不兼容变更**，下游项目需手动执行以下步骤：
 
-1. 克隆新仓库到与项目同级目录：`git clone git@github.com:your-username/codeflow-framework.git`
+1. 克隆新仓库到与项目同级目录：`git clone git@github.com:wwwweeia/codeflow-framework.git`
 2. 将项目 `.claude/` 下所有 `.md` 文件中的 marker 关键词替换：
    ```bash
    find .claude -name "*.md" -exec sed -i '' 's/codeflow-framework/codeflow-framework/g' {} +

@@ -14,7 +14,7 @@ next:
 ## 2.1 整体架构
 
 ```
-github.com/your-username/
+github.com/wwwweeia/
 │
 ├── codeflow-framework/          ★ 框架项目（编排层源）
 │   ├── core/                          通用编排文件
