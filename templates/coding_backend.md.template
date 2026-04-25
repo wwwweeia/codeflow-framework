@@ -1,0 +1,53 @@
+# 后端编码规范
+
+> 本文件定义 ${PROJECT_NAME} 后端开发的硬规则和最佳实践。
+
+## 分层架构
+
+```
+Controller  → 请求路由 + 参数校验
+  ↓
+Service     → 业务逻辑 + 事务管理
+  ↓
+Mapper      → 数据库操作
+  ↓
+Entity      → 数据模型
+```
+
+### 约束
+
+- Controller **禁止**直接调用 Mapper，必须通过 Service
+- Service **必须**标注 `@Transactional`
+- Mapper 使用 XML 编写复杂查询，**禁止**字符串拼接 SQL
+
+## 异常处理
+
+- 统一使用 `CommonException` 抛出业务异常
+- 全局异常处理器自动转换为 `{ code, message, data }` 格式
+- Service **禁止**返回语义不明的 `null`
+
+## SQL 规范
+
+- 列表查询 **必须**分页（参考 page_size, page_num）
+- 使用参数化查询，**禁止**字符串拼接
+- 关键查询字段 **必须**有索引
+
+## 日志与安全
+
+- 日志中 **禁止**打印密钥、Token、密码（使用脱敏函数）
+- 外部 URL 调用 **必须**进行白名单校验（防 SSRF）
+
+## 返回格式
+
+统一使用以下格式：
+
+```java
+R.ok(data)
+R.error(code, "message")
+R.failed("error message")
+```
+
+## 项目特定约定
+
+[补充项目的特定编码规范、框架约定等]
+

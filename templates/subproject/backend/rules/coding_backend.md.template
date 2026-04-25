@@ -1,0 +1,13 @@
+# Backend Coding Rules (${SUBPROJECT_NAME} 特有规则)
+
+> 共享后端编码规范见根目录 `.claude/rules/coding_backend.md`，本文件仅记录 ${SUBPROJECT_NAME} 子项目的特有约束。
+
+## 项目特有规则
+
+[补充本子项目特有的编码约束，例如：
+- 数据库表前缀约定
+- 特殊的分层约束
+- MCP 数据库执行协议
+- 定时任务规范
+- 外部 API 调用约定
+]

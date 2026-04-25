@@ -1,0 +1,124 @@
+# 项目初始化清单
+
+> 级别：${INIT_LEVEL} | 项目：${PROJECT_NAME} | 生成时间：${INIT_TIME}
+> 执行 `/init-setup` 或说「继续初始化」，AI 将逐步引导完成配置。
+> 查看进度：`/init-setup --status` | 跳过某任务：`/init-setup --skip T3`
+
+<!-- TASKS BEGIN -->
+
+## T1 — 填充 CLAUDE.md（项目概述与技术栈）
+- status: pending
+- required: true
+- level: level1
+- files: CLAUDE.md
+- auto-detect: |
+    扫描 package.json/pom.xml/build.gradle/requirements.txt 检测技术栈和依赖；
+    扫描顶层目录结构推断项目架构（单体/monorepo/前后端分离）；
+    检测 Dockerfile/docker-compose.yml 推断运行环境；
+    扫描 README.md（若存在）提取已有项目描述
+- ask-user: |
+    项目一句话定位（做什么、服务于谁）；
+    团队成员与角色（姓名+职责）；
+    部署环境（dev/staging/prod 地址）；
+    关键约束或已知坑点
+- verify: CLAUDE.md 中不含 [请填写] 占位符，技术栈和主要模块章节有实际内容
+
+## T2 — 填充业务词典（domain-ontology）
+- status: pending
+- required: true
+- level: level1
+- files: .claude/skills/domain-ontology/SKILL.md
+- auto-detect: |
+    后端：扫描 @Entity/@Table 注解类提取实体名和字段；扫描枚举类提取业务状态；
+    后端：扫描 @RestController/@RequestMapping 提取 API 路径中的业务动词；
+    前端：扫描 api/ 目录提取接口路径关键词；
+    数据库：扫描 migration/flyway/liquibase 文件提取表名和字段
+- ask-user: |
+    检测到的实体对应的中文业务名称；
+    核心业务规则（代码中体现不明显的）；
+    实体间关系确认（一对多/多对多等）
+- verify: marker 下方至少有 3 个术语条目，格式符合模板要求
+
+## T3 — 配置 MCP 集成（Jira/Confluence）
+- status: pending
+- required: false
+- level: level2
+- files: .mcp.json
+- auto-detect: |
+    检查 .mcp.json 是否存在且内容非空；
+    检查 .gitignore 是否已包含 .mcp.json（安全检查）；
+    尝试从环境变量或已有配置文件中读取 Jira URL
+- ask-user: |
+    Jira 用户名 / 密码 / projectKey（敏感信息，仅本地存储）；
+    Confluence 用户名 / 密码 / spaceKey / parentPageId；
+    MCP server jar 文件路径（__MCP_JIRA_PATH__ / __MCP_CONFLUENCE_PATH__）
+- verify: .mcp.json 中 username 和 projectKey 字段非空；.gitignore 包含 .mcp.json
+
+## T4 — 自定义编码规范
+- status: pending
+- required: false
+- level: level2
+- files: .claude/rules/coding_backend.md, .claude/rules/coding_frontend_shared.md
+- auto-detect: |
+    采样 5-10 个源文件检测代码风格（缩进宽度/Tab vs Space/引号类型/分号）；
+    检测 .eslintrc/.eslintrc.js/.prettierrc/checkstyle.xml/spotbugs.xml 等已有规范文件；
+    检测包管理器（npm/yarn/pnpm）和构建工具（vite/webpack/maven/gradle）
+- ask-user: |
+    确认检测到的代码风格是否正确，是否需要修正；
+    项目特有的编码约定（命名规则、禁用的写法、必须遵守的模式）
+- verify: rules 文件 marker 下方有非模板内容（项目特定的规则描述）
+
+## T5 — 执行框架升级（upgrade.sh）
+- status: pending
+- required: true
+- level: level1
+- files: (framework sync — .claude/ 各文件)
+- auto-detect: |
+    检查框架路径 ../h-codeflow-framework 是否存在；
+    读取框架当前版本（tools/VERSION）；
+    读取项目已安装版本（.claude/.sync-state/sync-state.csv 若存在）
+- ask-user: |
+    确认是否现在执行升级（也可以稍后手动执行）
+- verify: upgrade.sh 执行无报错，.claude/.sync-state/ 已更新
+
+## T6 — 完善子项目上下文
+- status: pending
+- required: false
+- level: level3
+- files: <subproject>/.claude/context/*.md
+- auto-detect: |
+    前端子项目：扫描 src/router/ 提取路由配置；扫描 src/store/ 提取 Vuex Store 模块；
+    前端子项目：扫描 src/components/ 列出组件清单；
+    后端子项目：扫描 @RestController 提取 API 端点列表；
+    后端子项目：检测 ORM 框架（MyBatis/JPA/Hibernate）和中间件（Redis/MQ）
+- ask-user: |
+    确认检测结果是否正确；
+    补充检测遗漏的路由 / 组件 / API 端点；
+    说明重要的技术约束（如框架版本限制）
+- verify: context 文件中无模板占位符，关键字段（路由列表/技术栈/API 约定）已填充
+
+## T7 — 确认 Spec 目录结构
+- status: pending
+- required: false
+- level: full
+- files: .claude/specs/
+- auto-detect: |
+    检查 .claude/specs/ 目录是否已有内容（SPEC-INDEX.md 或 feature-* 子目录）
+- ask-user: 无（提示：首次创建 Feature 时，PM Agent 会自动创建 Spec 文件）
+- verify: 用户知晓 Spec 工作流，确认即可
+
+## T8 — 初始化 E2E 测试基础设施
+- status: pending
+- required: false
+- level: full
+- files: e2e/
+- auto-detect: |
+    检查 e2e/ 目录是否已存在；
+    检测 playwright.config.ts/js 是否已配置；
+    检测 Node.js 版本（E2E 需要 Node 16+）
+- ask-user: |
+    是否需要 E2E 测试基础设施；
+    确认后执行初始化脚本
+- verify: e2e/ 目录和 playwright.config.ts 存在，或用户明确选择跳过
+
+<!-- TASKS END -->

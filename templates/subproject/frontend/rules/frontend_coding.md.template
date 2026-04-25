@@ -1,0 +1,12 @@
+# Frontend Coding Rules (${SUBPROJECT_NAME} 特有规则)
+
+> 共享编码规范见根目录 `.claude/rules/coding_frontend_shared.md`，本文件仅记录 ${SUBPROJECT_NAME} 子应用的特有约束。
+
+## 项目特有规则
+
+[补充本子项目特有的编码约束，例如：
+- 使用的 UI 组件库及版本
+- 微前端特殊约束
+- 样式扩展目录约定
+- 特殊的组件通信方式
+]

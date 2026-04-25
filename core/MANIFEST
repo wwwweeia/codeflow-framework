@@ -1,0 +1,76 @@
+# core/MANIFEST — 框架管理文件清单（唯一真相源）
+#
+# 维护者：修改 core/ 内容后，必须同步更新此清单。
+# 格式：相对路径 <level> <category>
+#
+# level:
+#   core   — 始终同步（rules/context/codemap 等基础设施文件）
+#   level1 — 最小集（轻量工作流）
+#   level2 — 标准级（+ PM/Arch + 核心 Skills）
+#   level3 — 专业级（+ Dev/FE/QA + 高级 Skills）
+#   full   — 完整版（+ Prototype/E2E/Jira/Confluence）
+#
+# category: agent | skill | command | rule | context | codemap
+#
+# 注意：skill 按目录名列出（脚本自动复制/同步目录下所有文件）
+
+# ── Agents ──────────────────────────────────────────────────────────────────
+agents/pm-agent.md              level2 agent
+agents/arch-agent.md            level2 agent
+agents/dev-agent.md             level3 agent
+agents/fe-agent.md              level3 agent
+agents/qa-agent.md              level3 agent
+agents/prototype-agent.md       full agent
+agents/e2e-runner.md            full agent
+
+# ── Commands ────────────────────────────────────────────────────────────────
+commands/commit.md              level1 command
+commands/fix.md                 level1 command
+commands/push-all.md            level1 command
+commands/upgrade-core.md        level1 command
+commands/deploy.md              level2 command
+commands/onboard.md             level2 command
+commands/spec-status.md         level2 command
+commands/memory.md              level3 command
+commands/init-setup.md          level3 command
+
+# ── Rules（始终同步）────────────────────────────────────────────────────────
+rules/project_rule.md           core rule
+rules/merge_checklist.md        core rule
+rules/framework_protection.md   core rule
+rules/knowledge-protocol.md     core rule
+
+# ── Context（始终同步）──────────────────────────────────────────────────────
+context/codemap-template.md     core context
+context/codemap-vs-specs.md     core context
+context/coding_backend_shared.md core context
+context/coding_frontend_shared.md core context
+
+# ── Codemap（始终同步）──────────────────────────────────────────────────────
+codemap/domains/HOWTO-generate-codemap.md core codemap
+
+# ── Skills ──────────────────────────────────────────────────────────────────
+# level1 — 最小集
+skills/domain-ontology          level1 skill
+skills/sdd-riper-one-light      level1 skill
+
+# level2 — 标准级
+skills/spec-templates           level2 skill
+skills/api-reviewer             level2 skill
+skills/sql-checker              level2 skill
+skills/backend-rules            level2 skill
+skills/frontend-conventions     level2 skill
+skills/frontend-arch-design     level2 skill
+
+# level3 — 专业级
+skills/using-git-worktrees      level3 skill
+skills/frontend-create-component level3 skill
+skills/frontend-create-module   level3 skill
+skills/frontend-api-integration level3 skill
+skills/framework-feedback       level3 skill
+
+# full — 完整版
+skills/frontend-prototype       full skill
+skills/e2e-testing              full skill
+skills/jira-task-management     full skill
+skills/confluence-doc-sync      full skill

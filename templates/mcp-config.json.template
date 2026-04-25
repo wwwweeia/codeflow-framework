@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "jira": {
+      "command": "node",
+      "args": ["__MCP_JIRA_PATH__/mcp-jira/dist/index.js"],
+      "env": {
+        "JIRA_BASE_URL": "https://jira.huaun.com",
+        "JIRA_USERNAME": "",
+        "JIRA_PASSWORD": "",
+        "JIRA_TIMEOUT_MS": "15000"
+      }
+    },
+    "confluence": {
+      "command": "node",
+      "args": ["__MCP_CONFLUENCE_PATH__/mcp-confluence/dist/index.js"],
+      "env": {
+        "CONFLUENCE_BASE_URL": "https://wiki.huaun.com",
+        "CONFLUENCE_USERNAME": "",
+        "CONFLUENCE_PASSWORD": "",
+        "CONFLUENCE_TIMEOUT_MS": "15000"
+      }
+    }
+  },
+  "jira": {
+    "projectKey": ""
+  },
+  "confluence": {
+    "spaceKey": "",
+    "parentPageId": ""
+  }
+}

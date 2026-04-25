@@ -1,0 +1,31 @@
+# API Conventions (${SUBPROJECT_NAME})
+
+<!--
+[AI Behavior Instruction]
+如果本文件为空或不完整：
+1. 扫描 Controller 类，识别 URL 前缀和通用模式
+2. 检查是否有统一的返回包装类（如 R、Result）
+3. 使用下方格式填写
+-->
+
+## URL 前缀
+
+| 模块 | 前缀 | 说明 |
+|------|------|------|
+| [待填写] | [待填写] | [待填写] |
+
+## 返回格式
+
+```java
+// 统一返回格式示例
+R.ok(data)
+R.error(code, "message")
+```
+
+## 认证与鉴权
+
+[补充项目的认证方式、Token 传递规范等]
+
+## 特殊约定
+
+[补充项目特有的 API 约定]

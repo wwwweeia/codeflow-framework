@@ -1,0 +1,14 @@
+.idea/
+*.iml
+.DS_Store
+core/.backup/
+reports/
+resume/
+.claude/scheduled_tasks.lock
+.mcp.json
+.claude/settings.local.json
+docs/node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+public/
+docs/.vitepress/.temp/

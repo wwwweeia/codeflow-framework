@@ -1,0 +1,19 @@
+{
+  "name": "ai-prompt-lab-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI Prompt Lab E2E 测试套件",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:ui": "npx playwright test --ui",
+    "report": "npx playwright show-report",
+    "codegen": "npx playwright codegen http://localhost:5173"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  }
+}

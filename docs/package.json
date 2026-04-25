@@ -1,0 +1,18 @@
+{
+  "name": "codeflow-framework-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "codeflow-framework 文档站",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview",
+    "docs:generate-ref": "tsx .vitepress/utils/generate-ref.ts"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "tsx": "^4.19.0",
+    "gray-matter": "^4.0.3"
+  }
+}
