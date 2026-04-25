@@ -27,6 +27,31 @@ CodeFlow is a **meta-framework** that standardizes AI-assisted software developm
 
 Designed for teams using Claude Code who need consistency, traceability, and quality assurance across projects.
 
+## ❓ 它解决什么问题
+
+AI 辅助开发在单项目、单人使用时效果很好。但当团队管理多个项目时：
+
+| 痛点 | 表现 |
+|------|------|
+| **行为不可控** | 同一个需求，AI 这次这样做、下次那样做，缺乏一致性 |
+| **经验无法复用** | 项目 A 踩过的坑、总结的规范，项目 B 还要重新来一遍 |
+| **质量靠运气** | 没有结构化的验收流程，代码质量全凭 AI 当天的"发挥" |
+| **协作无标准** | 不同开发者跟 AI 的协作方式各不相同，团队无法形成合力 |
+
+**CodeFlow 的解法**——用确定性空间消除不确定性：
+
+```
+需求(确认) → 设计(确认) → AI 高速执行 → 验证
+     ↑              ↑
+   人审批          人审批        AI 在边界内自动完成编码、测试、审查
+```
+
+- **一致性**：所有项目共享同一套 Agent 定义、工作流规则和质量标准（`upgrade.sh` 一键同步）
+- **可沉淀**：项目中验证有效的改进，通过 `harvest.sh` 收割回框架，惠及所有项目
+- **确定性**：Spec-Driven Development——No Spec, No Code，先确认再执行
+
+> **一句话总结**：让 AI 辅助开发从"个人技能"变成"组织能力"。
+
 ## 🎯 核心理念
 
 **三铁律**：
