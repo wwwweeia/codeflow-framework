@@ -31,8 +31,8 @@ function hmrRefPages(): Plugin {
 }
 
 export default defineConfig({
-  // GitHub Pages 部署时改为 '/codeflow-framework/'，本地预览用 '/'
-  base: '/',
+  // GitHub Pages 部署需要设置项目路径，本地预览时改为 '/'
+  base: '/codeflow-framework/',
 
   // 构建输出到项目根目录的 public/（适用于 GitHub Pages）
   outDir: '../public',
