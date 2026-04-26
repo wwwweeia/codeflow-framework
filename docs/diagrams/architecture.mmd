@@ -1,0 +1,33 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4f46e5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3', 'lineColor': '#6366f1', 'secondaryColor': '#e0e7ff', 'tertiaryColor': '#c7d2fe'}}}%%
+graph TB
+    subgraph framework["编排层 — codeflow-framework/core/"]
+        direction LR
+        agents["agents/<br/>7 个 Agent 定义"]
+        rules["rules/<br/>工作流 + 质量规则"]
+        skills["skills/<br/>18 个知识库"]
+        commands["commands/<br/>Slash 命令"]
+    end
+
+    subgraph project1["项目 A — .claude/"]
+        direction LR
+        pa["框架管理内容<br/><small>marker 上方</small>"]
+        pb["项目自定义内容<br/><small>marker 下方</small>"]
+    end
+
+    subgraph project2["项目 B — .claude/"]
+        direction LR
+        p2a["框架管理内容<br/><small>marker 上方</small>"]
+        p2b["项目自定义内容<br/><small>marker 下方</small>"]
+    end
+
+    framework -->|"upgrade.sh<br/>一键同步"| project1
+    framework -->|"upgrade.sh<br/>一键同步"| project2
+    project1 -->|"harvest.sh<br/>收割验证过的改进"| framework
+
+    style framework fill:#4f46e5,color:#fff,stroke:#3730a3
+    style project1 fill:#e0e7ff,stroke:#6366f1,color:#312e81
+    style project2 fill:#e0e7ff,stroke:#6366f1,color:#312e81
+    style agents fill:#818cf8,color:#fff,stroke:#4f46e5
+    style rules fill:#818cf8,color:#fff,stroke:#4f46e5
+    style skills fill:#818cf8,color:#fff,stroke:#4f46e5
+    style commands fill:#818cf8,color:#fff,stroke:#4f46e5

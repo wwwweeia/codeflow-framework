@@ -41,3 +41,9 @@ next: false
 基础设施与 DevOps 实践。
 
 - **[CI/CD 自动化部署](/resources/watchtower-cicd-guide)** — 基于 Watchtower + Docker 的自动化部署方案，支持飞书群通知
+
+## 竞品对比分析
+
+与同类 AI 开发框架/工具的客观对比，帮助理解 CodeFlow 的定位和选型。
+
+- **[vs Superpowers](/resources/vs-superpowers)** — 定位差异、核心壁垒与互补关系分析

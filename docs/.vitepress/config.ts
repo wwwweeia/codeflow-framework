@@ -1,4 +1,5 @@
 import { defineConfig, type Plugin } from 'vitepress'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 import * as path from 'node:path'
 import { generateRefPages } from './utils/generate-ref'
 
@@ -30,7 +31,7 @@ function hmrRefPages(): Plugin {
   }
 }
 
-export default defineConfig({
+export default withMermaid({
   // GitHub Pages 部署需要设置项目路径，本地预览时改为 '/'
   base: '/codeflow-framework/',
 
@@ -207,6 +208,12 @@ export default defineConfig({
           text: '运维指南',
           items: [
             { text: 'CI/CD 自动化部署', link: '/resources/watchtower-cicd-guide' },
+          ],
+        },
+        {
+          text: '竞品对比分析',
+          items: [
+            { text: 'vs Superpowers', link: '/resources/vs-superpowers' },
           ],
         },
       ],

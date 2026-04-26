@@ -32,11 +32,31 @@ codeflow-framework 是一个**元框架项目**（不是应用项目），为多
 
 **七角色**：
 
-```
-PM（需求结构化）→ Architect（技术设计）→ Dev/FE（编码实现）→ QA（独立审查）
-                          ↑ 主会话（调度中心）↑
+```mermaid
+graph LR
+    hub["主会话<br/>调度中心"]
 
-Prototype（前端原型，按需触发）  E2E（端到端测试，按需触发）
+    pm["PM<br/>需求结构化"]
+    arch["Architect<br/>技术设计"]
+    dev["Dev<br/>后端实现"]
+    fe["FE<br/>前端实现"]
+    qa["QA<br/>独立审查"]
+    proto["Prototype<br/>前端原型"]
+    e2e["E2E<br/>端到端测试"]
+
+    hub -->|"1"| pm
+    hub -->|"2"| arch
+    hub -->|"3"| dev
+    hub -->|"3"| fe
+    hub -->|"4"| qa
+    hub -.->|"按需"| proto
+    hub -.->|"按需"| e2e
+
+    pm -->|"Spec"| arch
+    arch -->|"设计文档"| dev
+    arch -->|"设计文档"| fe
+    dev -->|"实现代码"| qa
+    fe -->|"实现代码"| qa
 ```
 
 **四工作流**：
@@ -48,18 +68,31 @@ Prototype（前端原型，按需触发）  E2E（端到端测试，按需触发
 
 ## 1.3 两层分离架构
 
-```
-┌─────────────────────────────────────────────────┐
-│              编排层 (Framework)                  │
-│   codeflow-framework/core/                │
-│   通用的、固定的工作流定义                        │
-│   由框架脚本管理，版本化发布                      │
-├─────────────────────────────────────────────────┤
-│              执行层 (Project)                    │
-│   各项目/.claude/                               │
-│   项目特有的业务规则、知识库、记忆                 │
-│   由项目团队维护，框架升级时自动保留               │
-└─────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph framework["编排层 — codeflow-framework/core/"]
+        direction LR
+        agents["agents/<br/>7 个 Agent 定义"]
+        rules["rules/<br/>工作流 + 质量规则"]
+        skills["skills/<br/>18 个知识库"]
+        commands["commands/<br/>Slash 命令"]
+    end
+
+    subgraph project1["项目 A — .claude/"]
+        direction LR
+        pa["框架管理内容<br/><small>marker 上方</small>"]
+        pb["项目自定义内容<br/><small>marker 下方</small>"]
+    end
+
+    subgraph project2["项目 B — .claude/"]
+        direction LR
+        p2a["框架管理内容<br/><small>marker 上方</small>"]
+        p2b["项目自定义内容<br/><small>marker 下方</small>"]
+    end
+
+    framework -->|"upgrade.sh<br/>一键同步"| project1
+    framework -->|"upgrade.sh<br/>一键同步"| project2
+    project1 -->|"harvest.sh<br/>收割改进"| framework
 ```
 
 ## 1.4 三种文件类型

@@ -1,0 +1,21 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4f46e5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730a3', 'lineColor': '#6366f1'}}}%%
+graph LR
+    framework["codeflow-framework<br/><small>core/ 统一规范</small>"]
+    project["下游项目<br/><small>.claude/ 项目定制</small>"]
+
+    framework -->|"upgrade.sh<br/>推送标准"| project
+    project -->|"harvest.sh<br/>收割经验"| framework
+
+    subgraph marker["Stub Marker 机制"]
+        direction TB
+        above["marker 上方: 框架管理<br/><small>upgrade.sh 自动更新</small>"]
+        mark["- - - marker 行 - - -"]
+        below["marker 下方: 项目自定义<br/><small>升级时完整保留</small>"]
+        above --- mark --- below
+    end
+
+    style framework fill:#4f46e5,color:#fff,stroke:#3730a3
+    style project fill:#e0e7ff,stroke:#6366f1,color:#312e81
+    style above fill:#c7d2fe,stroke:#6366f1,color:#312e81
+    style mark fill:#fbbf24,color:#78350f,stroke:#d97706
+    style below fill:#10b981,color:#fff,stroke:#059669

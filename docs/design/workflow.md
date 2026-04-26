@@ -29,23 +29,20 @@ next:
 
 ## 4.2 智能路由决策树
 
-```
-需求已明确
-    ↓
-Q0: 是否轻量改动？（≤3 文件 / bug fix / 配置变更 / 不涉及新 API）
-    ├── 是 → Q0 轻量模式（sdd-riper-one-light 协议）
-    └── 否 ↓
-Q1: 是否涉及数据库 / API / 后端逻辑变更？
-    ├── 否 → Q2
-    └── 是 → Q3
-              ↓
-Q3: 是否同时涉及页面 / 交互变更？
-    ├── 否 → 工作流 A（纯后端）
-    └── 是 → 工作流 C（前后端联动）
+```mermaid
+graph TD
+    input["需求已明确"] --> q0{"Q0: 轻量改动?<br/><small>≤3 文件 / bug fix</small>"}
+    q0 -->|"是"| lightweight["Q0 轻量模式<br/><small>sdd-riper-one-light</small>"]
+    q0 -->|"否"| q1{"Q1: 涉及后端?<br/><small>数据库 / API / 逻辑</small>"}
 
-Q2: 是否涉及页面 / 组件 / 样式 / 交互变更？
-    ├── 否 → 非功能性变更（直接处理）
-    └── 是 → 工作流 B（纯前端）
+    q1 -->|"是"| q3{"Q3: 同时涉及前端?"}
+    q1 -->|"否"| q2{"Q2: 涉及前端?<br/><small>页面 / 组件 / 交互</small>"}
+
+    q3 -->|"否"| wfA["工作流 A — 纯后端<br/><small>PM → Arch → Dev → QA</small>"]
+    q3 -->|"是"| wfC["工作流 C — 前后端联动<br/><small>PM → Arch → Dev + FE → QA</small>"]
+
+    q2 -->|"否"| nonfunc["非功能性变更<br/><small>直接处理</small>"]
+    q2 -->|"是"| wfB["工作流 B — 纯前端<br/><small>PM → Arch → FE → QA</small>"]
 ```
 
 ## 4.3 四种工作流详解
