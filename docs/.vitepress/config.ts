@@ -31,8 +31,8 @@ function hmrRefPages(): Plugin {
 }
 
 export default defineConfig({
-  // GitLab Pages 部署时改为 '/h-codeflow-framework/'，本地预览用 '/'
-  base: '/',
+  // GitHub Pages: '/codeflow-framework/'，GitLab Pages: '/h-codeflow-framework/'，本地预览: '/'
+  base: '/codeflow-framework/',
 
   // GitLab Pages 要求输出到项目根目录的 public/
   outDir: '../public',
