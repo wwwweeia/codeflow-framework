@@ -106,7 +106,7 @@ next: false
 ### T-INTAKE-03: Jira Issue 关联（如已配置 MCP）
 
 **需求描述**：
-> 请实现 SAIKG-1234 这个需求。
+> 请实现 PROJECT-1234 这个需求。
 
 **预期行为**：
 1. 检测到 Jira Issue Key

@@ -115,7 +115,7 @@ bash tools/harvest.sh [--apply] [--include-new] <下游项目目录>
 
 | 参数 | 必填 | 说明 |
 |------|------|------|
-| 下游项目目录 | 是 | 目标下游项目的根目录，如 `../ai-lingzhi` |
+| 下游项目目录 | 是 | 目标下游项目的根目录，如 `../your-project` |
 | `--apply` | 否 | 实际写入 core/（默认 dry-run 只看 diff） |
 | `--include-new` | 否 | 处理下游新增的、core/ 中不存在的文件 |
 
@@ -124,13 +124,13 @@ bash tools/harvest.sh [--apply] [--include-new] <下游项目目录>
 **使用示例**：
 ```bash
 # 预览差异
-bash tools/harvest.sh ../ai-lingzhi
+bash tools/harvest.sh ../your-project
 
 # 实际写入（写入前自动备份到 core/.backup/）
-bash tools/harvest.sh --apply ../ai-lingzhi
+bash tools/harvest.sh --apply ../your-project
 
 # 含新增文件
-bash tools/harvest.sh --apply --include-new ../ai-lingzhi
+bash tools/harvest.sh --apply --include-new ../your-project
 ```
 
 ## 8.5 release.sh

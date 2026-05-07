@@ -227,7 +227,7 @@ AI 主对话的第一反应不是去写代码，而是：
 ```
 
 代码变更：
-- 后端：`ai-kg-agent-hub/src/main/java/com/huaun/aikg/system/` 下的 controller/service/mapper/dto/query
+- 后端：`backend-service/src/main/java/com/example/project/system/` 下的 controller/service/mapper/dto/query
 - 前端：`h-kg-agent-center/pages/preset-questions/` + `store/presetQuestion.js` + `router/routes.js`
 - 原型：`h-kg-agent-center/pages/prototype/preset-questions/`
 

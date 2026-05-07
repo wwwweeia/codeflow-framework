@@ -55,7 +55,7 @@ EXCLUDE_GITHUB=(
     --exclude=".gitattributes"
 )
 
-# 敏感文件（含内部服务地址或 @huaun/ 包引用）
+# 敏感文件（含内部服务地址或 @your-org/ 包引用）
 EXCLUDE_SENSITIVE=(
     --exclude="core/context/coding_frontend_shared.md"
     --exclude="core/skills/frontend-ui-design/"
@@ -145,11 +145,59 @@ rsync "${RSYNC_OPTS[@]}" \
     "$FRAMEWORK_DIR/" "$TARGET/"
 
 echo ""
+echo "--- 脱敏替换 ---"
+echo ""
+
+# 脱敏：将内部标识替换为通用占位符
+# 顺序很重要：长模式在前，避免部分匹配被短模式吞掉
+SANITIZE_SED=(
+    -e 's|https://gitlab\.huaun\.com/rd\.huaun/h-codeflow-framework|https://github.com/wwwweeia/codeflow-framework|g'
+    -e 's|git@gitlab\.huaun\.com:rd\.huaun/h-codeflow-framework\.git|git@github.com:wwwweeia/codeflow-framework.git|g'
+    -e 's|gitlab\.huaun\.com/rd\.huaun/h-codeflow-framework/-/edit/develop/docs/:path|github.com/wwwweeia/codeflow-framework/edit/main/docs/:path|g'
+    -e 's|gitlab\.huaun\.com|gitlab.example.com|g'
+    -e 's|jira\.huaun\.com|jira.example.com|g'
+    -e 's|wiki\.huaun\.com|wiki.example.com|g'
+    -e 's|北京华云安信息技术有限公司|CodeFlow Contributors|g'
+    -e 's|@huaun/vul-ui|@your-org/ui-lib|g'
+    -e 's|@huaun/|@your-org/|g'
+    -e 's|com/huaun/aikg/|com/example/project/|g'
+    -e 's|com\.huaun\.aikg|com.example.project|g'
+    -e 's|ai-lingzhi|your-project|g'
+    -e 's|ai-kg-agent-hub|backend-service|g'
+    -e 's|192\.168\.104\.125|docs.example.com|g'
+    -e 's|SAIKG-|PROJECT-|g'
+    -e 's|huaun-codeflow-framework|h-codeflow-framework|g'
+    -e "s|window\.dispatchEvent('huaun:|window.dispatchEvent('app:|g"
+    -e "s|text: 'GitLab'|text: 'GitHub'|g"
+)
+
+SANITIZE_FILES=$(find "$TARGET" -type f \( -name '*.md' -o -name '*.ts' -o -name '*.sh' -o -name '*.json' -o -name '*.yml' \) \
+    ! -path '*/node_modules/*' ! -path '*/.git/*' ! -path '*/.vitepress/cache/*' ! -path '*/public/*')
+
+if [[ "$APPLY" == "true" ]]; then
+    echo "$SANITIZE_FILES" | while read -r file; do
+        [[ -z "$file" ]] && continue
+        sed -i '' "${SANITIZE_SED[@]}" "$file"
+    done
+    echo "✓ 脱敏替换已执行"
+else
+    COUNT=0
+    echo "$SANITIZE_FILES" | while read -r file; do
+        [[ -z "$file" ]] && continue
+        MATCHES=$(sed "${SANITIZE_SED[@]}" "$file" | diff "$file" - 2>/dev/null | grep -c '^[<>]' || true)
+        if [[ "$MATCHES" -gt 0 ]]; then
+            echo "  $(basename "$file"): ${MATCHES} 行变更"
+        fi
+    done
+    echo "（dry-run 模式，未实际替换）"
+fi
+
+echo ""
 if [[ "$APPLY" == "false" ]]; then
     echo "=== 以上为预览，未实际写入 ==="
     echo "确认无误后执行: bash tools/sync-mirror.sh --apply $TARGET"
 else
-    echo "=== 同步完成 ==="
+    echo "=== 同步 + 脱敏完成 ==="
     echo "下一步:"
     echo "  cd $TARGET"
     echo "  git add -A"

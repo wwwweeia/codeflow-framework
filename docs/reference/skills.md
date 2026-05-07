@@ -692,7 +692,7 @@ export class XxxPage extends BasePage {
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| E2E_BASE_URL | https://192.168.104.125 | 被测服务器地址 |
+| E2E_BASE_URL | https://docs.example.com | 被测服务器地址 |
 | E2E_USERNAME | aikg | 登录用户名 |
 | E2E_PASSWORD | admin123 | 登录密码 |
 | E2E_HEADLESS | true | 是否无头模式 |
@@ -843,16 +843,16 @@ const SESSION_FILE = path.join(__dirname, '..', '..', '.auth', 'session-storage.
 
 > 目录：`core/skills/framework-feedback/`
 
-向 h-codeflow-framework 团队提交反馈（Bug、Feature Request、Improvement、Question）。 Use when user wants to report a framework issue, request a feature, suggest improvements, or ask questions.
+向 codeflow-framework 团队提交反馈（Bug、Feature Request、Improvement、Question）。 Use when user wants to report a framework issue, request a feature, suggest improvements, or ask questions.
 
-帮助用户向 h-codeflow-framework 团队提交结构化反馈。反馈将通过 GitLab Issue + 飞书群通知发送给框架维护团队。
+帮助用户向 codeflow-framework 团队提交结构化反馈。反馈将通过 GitHub Issue + 通知发送给框架维护团队。
 
 ::: details 查看完整定义
 
 
 **框架反馈技能 (Framework Feedback)**
 
-帮助用户向 h-codeflow-framework 团队提交结构化反馈。反馈将通过 GitLab Issue + 飞书群通知发送给框架维护团队。
+帮助用户向 codeflow-framework 团队提交结构化反馈。反馈将通过 GitHub Issue + 通知发送给框架维护团队。
 
 > **注意**：此技能执行一次提交后立即返回结果。不重试、不循环、不追问。
 
@@ -860,7 +860,7 @@ const SESSION_FILE = path.join(__dirname, '..', '..', '.auth', 'session-storage.
 
 首次使用前，请确保下游项目已完成环境配置。参见 **[SETUP.md](./SETUP.md)**（随技能一同下发）。
 
-快速检查：在项目目录执行 `glab issue list`，能看到 Issue 列表即环境就绪。未配置 glab 时技能仍可工作（仅发送飞书通知，不创建 GitLab Issue）。
+快速检查：在项目目录执行 `gh issue list`，能看到 Issue 列表即环境就绪。未配置 gh 时技能仍可工作（仅发送Webhook 通知，不创建 GitHub Issue）。
 
 **执行流程**
 
@@ -886,7 +886,7 @@ const SESSION_FILE = path.join(__dirname, '..', '..', '.auth', 'session-storage.
 
 **项目名称**：从 `git remote get-url origin` 提取仓库名，或读取 `package.json`/`pom.xml` 中的项目名。
 
-**框架版本**：扫描 `.claude/` 目录下任意包含 `h-codeflow-framework:core` marker 的文件，从 marker 行提取版本号（格式如 `v1.8.0-20260421`）。
+**框架版本**：扫描 `.claude/` 目录下任意包含 `codeflow-framework:core` marker 的文件，从 marker 行提取版本号（格式如 `v1.8.0-20260421`）。
 
 **组件分类**：根据用户反馈内容推断涉及的框架组件：
 - `agents` — PM/Arch/Dev/FE/QA/Prototype/E2E Agent 行为
@@ -979,8 +979,8 @@ FEEDBACK_JSON
 根据脚本输出的 JSON 结果向用户反馈：
 
 - **success**：
-  - 如果 `gitlab.status` 为 `"success"`：告知用户 "反馈已提交！GitLab Issue 已创建：{gitlab.url}，同时已发送飞书通知。"
-  - 如果 `gitlab.status` 为 `"skipped"` 或 `"failed"`：告知用户 "反馈已通过飞书通知发送。GitLab Issue 未创建（glab CLI 不可用），框架团队会尽快处理。"
+  - 如果 `github.status` 为 `"success"`：告知用户 "反馈已提交！GitHub Issue 已创建：{github.url}，同时已发送 Webhook 通知。"
+  - 如果 `github.status` 为 `"skipped"` 或 `"failed"`：告知用户 "反馈已通过 Webhook 通知发送。GitHub Issue 未创建（gh CLI 不可用），框架团队会尽快处理。"
 - **failed**：展示错误信息，建议用户直接联系框架团队或通过其他渠道反馈。
 
 **约束**
@@ -989,6 +989,8 @@ FEEDBACK_JSON
 - 不修改用户项目中的任何文件
 - 不自动重试失败的提交
 - 不在反馈中包含敏感信息（密码、Token、密钥等）
+
+<!-- codeflow-framework:core v1.9.0-20260421 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 
 :::
 
@@ -1671,308 +1673,6 @@ marker 下方应由各项目填充以下内容（参考现有代码提取）：
 
 :::
 
-## UI 设计规范（vul-ui 体系）
-
-> 目录：`core/skills/frontend-ui-design/`
-
-前端 UI 设计与组件选型规范（vul-ui / Element UI 体系）。涵盖组件选型三层决策树、设计 Token（色彩/字号/间距/圆角/阴影）、vul-ui 组件使用规范与视觉规格、交互反馈模式、页面模板、业务组件封装规范、合规检查清单。触发场景：写任何 .vue 文件、选组件、写样式、新建页面/路由/业务组件、重构页面 UI、不确定用哪个 Element UI 组件、不确定按钮/弹窗/表格怎么写、颜色间距字号该用什么值。即使用户没有明确提到"设计规范"，只要涉及前端 UI 编码决策就应阅读本规范。
-
-> 版本：v1.8
-> 适用范围：本仓库所有 Nuxt / Vue 2 前端，及未来新建子应用、新增页面、新建业务组件
-> 基础组件库：**vul-ui**（基于 Element UI Vue 2 定制，包路径 `@huaun/vul-ui`）
-
-::: details 查看完整定义
-
-
-**UI 设计规范（vul-ui 体系）**
-
-> 版本：v1.8
-> 适用范围：本仓库所有 Nuxt / Vue 2 前端，及未来新建子应用、新增页面、新建业务组件
-> 基础组件库：**vul-ui**（基于 Element UI Vue 2 定制，包路径 `@huaun/vul-ui`）
-> Token 权威源：**公司 MasterGo 设计规范**（fileId=`87356408089452`）；各前端 `assets/css/variables.scss` 仅是实现侧落地参考，新项目无 variables.scss 时仍以设计稿为准
-> 配套文档：[`element-ui-components.md`](./references/element-ui-components.md)
-
----
-
-**序章：前端开发的强制约束（Hard Gate）**
-
-**任何前端 Agent / 开发者在开始以下工作前必须完整阅读本文件**：
-
-- 新建页面 / 路由
-- 新建业务组件（`components/` 下任何 `.vue` 新文件）
-- 重构现有页面 UI 结构
-- 新接入子应用（含搭骨架）
-
-阅读完成后才能进入：
-
-- 调用 `frontend-create-component` / `frontend-create-module` 等技能
-- 撰写 `03_impl_frontend.md`
-- 落盘任何 `.vue` 文件
-
-**冲突处理**：发现本规范与已有页面冲突时，**遵循本规范，旧页面进待重构清单**，严禁反向降低标准。
-
-**前端 Agent 行为铁律**：
-
-1. 接到任务先 `Read` 本文件 → 再读对应 App 的 `frontend_coding.md` → 再写代码
-2. 选型必须先按 §2 的三层优先级走 vul-ui，禁止跳过
-3. 自检清单未通过不得交付（→ Read [`references/checklist.md`](./references/checklist.md)）
-
----
-
-**详细规范文件索引**
-
-本规范采用**渐进式加载**：SKILL.md 是决策入口，详细规范按需读取。
-
-| 当你需要… | 读取 |
-|-----------|------|
-| 色彩/字号/间距/圆角/阴影等 Token 值 | [`references/design-tokens.md`](./references/design-tokens.md) |
-| 某个组件怎么用（Button/Form/Table/Dialog/Tag…）及视觉规格 | [`references/component-specs.md`](./references/component-specs.md) |
-| 交互反馈模式、通用交互硬约束（按钮联动/删除确认/文字省略等） | [`references/interaction-patterns.md`](./references/interaction-patterns.md) |
-| 封装业务组件的规则、代码目录规范 | [`references/component-development.md`](./references/component-development.md) |
-| 提交前合规检查清单 | [`references/checklist.md`](./references/checklist.md) |
-| Element UI 完整组件清单 | [`references/element-ui-components.md`](./references/element-ui-components.md) |
-| 设计稿同步映射、变更记录 | [`references/design-sync-mapping.md`](./references/design-sync-mapping.md) |
-
----
-
-**0. 规范定位与使用方式**
-
-**定位**：本规范是**新建项目骨架、新页面、新业务组件**的硬约束。设计前必读 §1–§2，编码时对照详细规范文件。
-
-**何时必须遵守**：
-
-| 场景 | 是否强制 |
-|------|---------|
-| 新建子应用 / 新业务模块 | 强制 |
-| 新建页面（路由级） | 强制 |
-| 新建业务组件 | 强制 |
-| 已有页面整页重构 | 强制 |
-| 已有页面小修小补（文案 / 单字段调整） | 推荐遵守，不阻断 |
-| Bug 修复（不涉及结构调整） | 不强制 |
-
----
-
-**1. 设计原则**
-
-1. **vul-ui 优先**：能用 vul-ui 解决的，禁止自造（详见 §2）。
-2. **一致性优于创新**：同一仓库同类操作只用一种表达；按钮 / 链接二选一，不混用。
-3. **少就是多**：高频操作上靠右，破坏性操作单独出挑，避免按钮堆叠。
-4. **清晰可预期**：状态、反馈、加载、空态、错误态都必须显性，不允许白屏。
-5. **可达性（A11y）**：交互元素必须可键盘操作，色彩对比度 ≥ 4.5:1，图标必须有 `aria-label` 或 `tooltip`。
-
----
-
-**2. 组件选型策略（vul-ui 优先）**
-
-**2.1 vul-ui 是什么**
-
-- **vul-ui** 是公司内部基于 **Element UI**（Vue 2）定制的组件库
-- 包路径：`@huaun/vul-ui`
-- **API 与 Element UI 99% 一致**，标签名 `<el-button>` / `<el-form>` / `<el-table>` 等完全相同
-- 主要差异（见附录 B）：
-  - Primary 主色 `#1890ff`（非 Element 默认 `#409EFF`）
-  - 字体族追加 `'PingFang SC'` / `'微软雅黑'`
-  - 主文字色 `#00182e`、正文色 `rgba(60,84,113,1)`
-  - 部分组件默认值微调（间距 / 圆角 / 阴影对齐本规范 Token）
-- 文档：公司内网（无公开链接），实操参考已落地的页面 + Element UI 官方文档
-
-**2.2 三层选型决策**
-
-收到 UI 需求时，**按以下顺序判定组件来源**，禁止跳级：
-
-```
-① vul-ui 现有组件能完成？
-   ├─ 是 → 直接使用，禁止重写、禁止 copy 源码改名
-   └─ 否
-       ↓
-② Element UI 官方有同类组件？
-   ├─ 是 → 用 Element UI 同名组件（vul-ui 通常已透传，无需额外引入）
-   └─ 否
-       ↓
-③ 按 business component 规范自行封装
-   - 内部必须用 vul-ui / Element UI 基础组件组合
-   - Token、字体、间距、圆角、阴影必须沿用 Token 规范
-   → Read references/component-development.md
-```
-
-**2.3 关键禁忌**
-
-| 禁忌 | 替代做法 |
-|------|---------|
-| 引入第三方 UI 库（Ant Design Vue / Vant / Naive UI 等） | 用 vul-ui / Element UI |
-| Copy vul-ui / Element UI 源码改名 | 用 slot + props 包装扩展 |
-| 用 `div` + 手写样式模拟已有组件（自写 Modal / Dropdown / Popover） | 必用 vul-ui 提供的对应组件 |
-| 锁死 vul-ui 小版本 | 跟随仓库统一升级 |
-| 同一交互在不同页面用不同组件实现 | 统一选型，写入本规范 |
-
-**2.4 自封装业务组件的硬约束**
-
-当走到第 ③ 步时（vul-ui + Element UI 都没有），自封装的组件必须：
-
-- **结构层**：内部用 vul-ui / Element UI 基础组件拼装，禁止从零写 DOM 模拟
-- **样式层**：颜色 / 字体 / 间距 / 圆角 / 阴影 100% 取自 Token 规范，禁止裸 hex / 裸 px
-- **行为层**：交互模式与同类型 vul-ui 组件保持一致
-- **API 层**：props 命名沿用 Element UI 习惯（如 `size` / `type` / `disabled` / `v-model`）
-
-详见 [`references/component-development.md`](./references/component-development.md)。
-
----
-
-**3. 布局规范**
-
-**3.1 栅格**
-
-- 桌面端基准宽度 1440px，最小支持 1280px
-- 使用 `<el-row :gutter="16">` + `<el-col :span="...">`
-- 同一区块 `gutter` 保持一致（16 或 24）
-
-**3.2 通用页面结构**
-
-```
-┌──────────────────────────────────┐
-│  顶部导航（宿主提供，子应用不重复画） │  固定 60px
-├────┬─────────────────────────────┤
-│侧栏 │  面包屑                      │  48px
-│    ├─────────────────────────────┤
-│240 │  页面标题 + 页头操作         │  64px
-│px  ├─────────────────────────────┤
-│    │                              │
-│    │  内容主区（白底）             │  flex-1
-│    │                              │
-└────┴─────────────────────────────┘
-```
-
-**3.3 页面根容器（硬约束）**
-
-```vue
-<template>
-  <div class="page-xxx">
-    <!-- 页面内容 -->
-  </div>
-</template>
-<style lang="scss" scoped>
-.page-xxx {
-  min-height: 100%;
-  padding: 20px 24px;
-  background: #fff; /* ← 必须白色，禁止 #f5f7fa */
-}
-</style>
-```
-
-> **页面最外层背景必须白色**是 vul-ui 体系的硬约束。嵌套的分区块 / 卡片允许使用 `#f8f9fa`。
-
-**3.4 微前端 / 宿主-子应用协作（如适用）**
-
-仅在仓库使用 qiankun 或类似微前端方案时遵守：
-
-- 子应用不重复绘制全局顶栏 / 侧栏
-- 宿主主区因 AI 抽屉等开关产生右边距推挤时，大区域组件必须兼容 `margin-right` 动画
-- 跨应用通信走 `window.dispatchEvent('huaun:xxx')`，禁止跨应用直接操作 DOM
-
----
-
-**4. 页面模板**
-
-**4.1 列表页（最常见）**
-
-```
-[面包屑]
-[页面标题]                              [新建按钮]
-─────────────────────────────────────────
-[搜索 / 筛选条]
-─────────────────────────────────────────
-[表格]  ← 斑马 + 边框，行操作固定右
-─────────────────────────────────────────
-                                 [分页]
-```
-
-结构约束：
-- 筛选条字段 ≤ 5，超出用"高级筛选"折叠
-- 批量操作栏只在有选中时显示
-- 列表必须有默认排序
-
-**4.2 详情页**
-
-```
-[面包屑]
-[页面标题 + 状态 Tag]                   [编辑] [更多操作]
-─────────────────────────────────────────
-[Descriptions 基本信息]
-─────────────────────────────────────────
-[Tabs: 详情 | 关联数据 | 操作日志]
-```
-
-**4.3 表单页**
-
-- 新建 / 编辑独立路由或 Drawer（弹层选型 → Read [`references/component-specs.md`](./references/component-specs.md) §4）
-- 分组用 `<el-divider content-position="left">分组标题</el-divider>`
-- 字段 > 15 必须分组
-
-**4.4 向导 / 多步流程**
-
-- 使用 `<el-steps>` + 内容区 + 底部"上一步 / 下一步 / 完成"
-- 每步必须可返回修改，不丢数据
-- 最后一步显示完成页（Result 组件）
-
----
-
-**附录 A：快速查表**
-
-> Agent 最常用的入口。大多数场景查这张表就够了，需要详细规格时再读对应的 reference 文件。
-
-| 我要做… | 用什么 | 详细规格 |
-|--------|--------|---------|
-| 显示一条成功提示 | `this.$message.success('…')` | component-specs.md §5 |
-| 确认删除 | `el-popconfirm`（行内） / `this.$msgbox.confirm`（页级） | interaction-patterns.md §5.3 |
-| 列表页 | Table + Pagination + Empty | component-specs.md §3 + §9 |
-| 表单（8 字段以内） | Dialog + Form | component-specs.md §4 + §2 |
-| 详情查看 / 长表单 | Drawer + Form / Descriptions | component-specs.md §4 |
-| 多步操作 | Drawer + Steps | component-specs.md §4 |
-| 空状态 | `el-empty` + 引导按钮 | interaction-patterns.md §3 |
-| 加载态 | Skeleton（首屏） / Loading（局部） | interaction-patterns.md §2 |
-| 标注属性（状态 / 分类） | Tag | component-specs.md §7 |
-| 点击操作 | Button（不要用 Tag） | component-specs.md §1 |
-| 树 + 多选 + 输入框 | vul-ui `ElementSelectTree`（不要自拼） | component-specs.md §6 |
-| 业务组件兜底 | 自封装 + 6 项硬约束 | component-development.md |
-| 查色值 / 间距 / 字号 | Token 表 | design-tokens.md |
-| 提交前自检 | 合规检查清单 | checklist.md |
-
-**附录 B：vul-ui 与 Element UI 官方默认差异**
-
-| 项 | Element UI 默认 | vul-ui（本规范遵循） |
-|----|----------------|--------------------|
-| Primary 色 | `#409EFF` | `#1890ff` |
-| Danger 色 | `#F56C6C` | `#FF4C4C`（2026-04 对齐设计稿，原 vul-ui 历史值 `#F1382A`） |
-| 页面背景 | 允许 `#f5f7fa` | 必须 `#fff` |
-| 字体族 | 官方默认 | 追加 `'PingFang SC'`, `'微软雅黑'` |
-| 主文字色 | `#303133` | `#00182e` |
-| 正文色 | `#606266` | `rgba(60,84,113,1)` |
-| 复合树选择 | 无 | 扩展 `ElementSelectTree` |
-
-> 差异来源：`@huaun/vul-ui` 定制。上表用于设计稿与实现对齐时参考。
-
-**附录 C：前端 Agent 阅读路径**
-
-针对 fe-agent / prototype-agent / arch-agent 的快速摘要：
-
-| Agent / 角色 | 任务前必读 | 不可跳过的硬约束 |
-|-------------|-----------|----------------|
-| **arch-agent**（前端模式） | 本文件 + references/component-specs.md | §2.2 决策树、component-specs.md |
-| **prototype-agent** | 本文件 + references/design-tokens.md | §2.2 决策树、design-tokens.md、component-specs.md |
-| **fe-agent** | 本文件 + 按需读取所有 references/ | §2 选型、Token、白底、业务组件、checklist.md |
-| **qa-agent**（前端 Review） | 本文件 + references/checklist.md | 用 checklist.md 作为 Review Checklist |
-
-**最小接入示例**（在各 Agent 的 SKILL.md 顶部加一句）：
-
-```markdown
-> **开始任何前端任务前，必须 Read `core/skills/frontend-ui-design/SKILL.md`**
-> - 设计 / 原型阶段至少读完 SKILL.md + references/design-tokens.md
-> - 实现阶段按 SKILL.md 末尾的文件索引按需读取
-> - 提交前必须按 references/checklist.md 逐项核对
-```
-
-:::
-
 ## Jira 任务管理集成
 
 > 目录：`core/skills/jira-task-management/`
@@ -2045,7 +1745,7 @@ Jira 任务管理集成规范。定义各 Agent 在 SDD 工作流中如何使用
 **产出要求**：如果关联了 Jira Issue，在 `01_requirement.md` 头部添加：
 
 ```markdown
-> **Jira Issue**: [SAIKG-1234](https://jira.huaun.com/browse/SAIKG-1234)
+> **Jira Issue**: [YOURPROJECT-1234](https://jira.example.com/browse/YOURPROJECT-1234)
 > **Issue Type**: Story | **Priority**: High | **Status**: To Do
 ```
 
@@ -2150,6 +1850,7 @@ To Do → In Progress → In Review → Done
 - 工作流照常进行，Spec 文档中的 Jira Issue 字段留空
 - 不要因为 Jira 不可用而中断任何工作流步骤
 - 不要在输出中提示"Jira 连接失败"等信息（避免噪音）
+<!-- codeflow-framework:core v1.10.0-20260422 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 
 :::
 
@@ -2653,7 +2354,7 @@ git check-ignore -q .worktrees 2>/dev/null
 ```bash
 **后端 worktree（工作流 C）**
 git worktree add .worktrees/feature-<name>-backend -b feature/<name>-backend
-cd .worktrees/feature-<name>-backend/ai-kg-agent-hub
+cd .worktrees/feature-<name>-backend/backend-service
 
 **前端 worktree（工作流 C）**
 git worktree add .worktrees/feature-<name>-frontend -b feature/<name>-frontend

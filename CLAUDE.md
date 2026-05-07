@@ -62,8 +62,8 @@ bash ../h-codeflow-framework/tools/upgrade.sh --conflict=fail
 FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 从下游项目收割验证过的变更回 core/（在框架目录执行）
-bash tools/harvest.sh ../ai-lingzhi              # 预览差异
-bash tools/harvest.sh --apply ../ai-lingzhi      # 实际写入
+bash tools/harvest.sh ../your-project              # 预览差异
+bash tools/harvest.sh --apply ../your-project      # 实际写入
 
 # 发版预览（dry-run，不发送通知、不 push）
 bash tools/release.sh
@@ -172,10 +172,10 @@ git checkout tools/VERSION
 
 ## 试验场工作流（双向同步）
 
-框架没有执行环境，变更需要在真实项目中验证。当前形成"demo 快速验证 → ai-lingzhi 真实任务验证 → 沉淀"三层闭环：
+框架没有执行环境，变更需要在真实项目中验证。当前形成"demo 快速验证 → your-project 真实任务验证 → 沉淀"三层闭环：
 
 - **`demo/`（首发验证）**：框架内自带的最小演示项目，所有 `core/` 变更**必须先在此验证**通过
-- **`ai-lingzhi`（真实验证）**：真实下游项目，用于在业务场景中验证变更的实际效果
+- **`your-project`（真实验证）**：真实下游项目，用于在业务场景中验证变更的实际效果
 
 ### 双向工具链
 
@@ -189,9 +189,9 @@ git checkout tools/VERSION
 当需要在下游项目中实验新功能并沉淀回框架时：
 
 1. **框架侧开分支**：`git checkout -b exp/xxx`，修改 `core/`，VERSION 设为 dev 版本（如 `1.6.0-dev.1-20260418`）
-2. **推送到试验项目**：在 ai-lingzhi 执行 `FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh`
+2. **推送到试验项目**：在 your-project 执行 `FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh`
 3. **验证迭代**：在真实任务中使用，发现问题可直接修改 marker 上方内容
-4. **收割回框架**：在框架目录执行 `bash tools/harvest.sh ../ai-lingzhi`（先 dry-run 看 diff），确认后 `--apply`
+4. **收割回框架**：在框架目录执行 `bash tools/harvest.sh ../your-project`（先 dry-run 看 diff），确认后 `--apply`
 5. **正式发版**：去掉 VERSION 中的 `-dev`，更新 CHANGELOG，执行 `release.sh`
 
 ### 冲突检测机制
@@ -220,10 +220,10 @@ AI 在下游项目中改进了 marker 上方的框架内容（如优化了 Agent
 
 ```
 **[框架沉淀建议]**
-- 验证项目：ai-lingzhi
+- 验证项目：your-project
 - 涉及文件：.claude/rules/project_rule.md（marker 上方）
 - 改进内容：<具体描述>
-- 建议操作：在框架目录执行 `bash tools/harvest.sh ../ai-lingzhi` 预览差异
+- 建议操作：在框架目录执行 `bash tools/harvest.sh ../your-project` 预览差异
 ```
 
 ## 通知系统

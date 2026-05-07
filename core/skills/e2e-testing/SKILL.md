@@ -227,7 +227,7 @@ export class XxxPage extends BasePage {
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| E2E_BASE_URL | https://192.168.104.125 | 被测服务器地址 |
+| E2E_BASE_URL | https://docs.example.com | 被测服务器地址 |
 | E2E_USERNAME | aikg | 登录用户名 |
 | E2E_PASSWORD | admin123 | 登录密码 |
 | E2E_HEADLESS | true | 是否无头模式 |

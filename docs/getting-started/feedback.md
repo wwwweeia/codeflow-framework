@@ -68,7 +68,7 @@ next: false
 组件: agents
 优先级: medium
 标题: dev-agent 在处理复杂查询时未生成索引检查
-项目: ai-lingzhi
+项目: your-project
 框架版本: v2.1.0-20260425
 提交者: zhangsan
 ─────────────────

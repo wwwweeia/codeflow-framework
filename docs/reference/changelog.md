@@ -7,6 +7,27 @@ description: h-codeflow-framework 版本历史与更新日志
 
 &gt; h-codeflow-framework 版本历史与更新日志
 
+## [2.3.1-20260507] - 2026-05-07
+
+### 🐛 修复
+
+- **[#5](https://github.com/wwwweeia/codeflow-framework/-/issues/5)** FE/QA 自检清单新增 B-4 字段映射表逐列核对，防止前后端字段不一致
+- **[#7](https://github.com/wwwweeia/codeflow-framework/-/issues/7)** 新增铁律"残留代码不构成 Spec"，阻止 Intake 将已有代码误判为新需求
+- **[#8](https://github.com/wwwweeia/codeflow-framework/-/issues/8)** 统一 Spec 目录命名格式为 `YYYY-MM-DD_hh-mm_&lt;name&gt;`，消除 PM Agent 创建目录时的格式歧义
+- **[#9](https://github.com/wwwweeia/codeflow-framework/-/issues/9)** 主会话 Intake 三问前主动加载 domain-ontology Skill，确保业务术语准确
+- **[#10](https://github.com/wwwweeia/codeflow-framework/-/issues/10)** domain-ontology 新增术语铁律，防止 Agent 自行发明业务术语
+- **[#11](https://github.com/wwwweeia/codeflow-framework/-/issues/11)** Workflow C 并行模式强制主会话为每个 Agent 创建独立 Worktree，禁止共用分支
+- **[#12](https://github.com/wwwweeia/codeflow-framework/-/issues/12)** Arch Agent Research 阶段强制加载后端代码模板，确保设计与实现结构一致
+- E2E 验证码 OCR 从 Swift Vision 迁移到 ddddocr（跨平台兼容）
+
+### 📋 升级须知
+
+- 无破坏性变更，直接执行 `bash ../h-codeflow-framework/tools/upgrade.sh` 即可
+- Workflow C 并行模式下，主会话需为 Dev/FE Agent 分别指定 `isolation: worktree`（#11 强制要求）
+- Arch Agent Research 阶段行为有调整，设计产出将自动对齐后端代码模板结构
+
+---
+
 ## [2.3.0-20260430] - 2026-04-30
 
 ### 🟢 新增
@@ -356,7 +377,7 @@ description: h-codeflow-framework 版本历史与更新日志
 - pm-agent：只产出 01_requirement.md，前端模式新增 §1-§7 字段级精度结构
 - qa-agent：审查标准改为对标 01 + 02_technical_design.md，新增审查文件依赖清单
 
-**知识文档细化（来自 ai-lingzhi 试验场验证）**
+**知识文档细化（来自 your-project 试验场验证）**
 - `codemap-vs-specs.md`：`03_implementation.md` 拆分为 `03_impl_backend.md` + `03_impl_frontend.md`（BE/FE 分开产出），"四轴"→"五轴验收"，新增 spec-template.md 引用
 - `HOWTO-generate-codemap.md`：3.2/3.4 小节补充经验提示，3.4 增加 `convertToVO` / `buildVO` 作为 VO 组装方法的参考
 
@@ -378,19 +399,19 @@ description: h-codeflow-framework 版本历史与更新日志
 ### 变更（Breaking Change）
 
 **仓库迁移与重命名**
-- 仓库名称：`huaun-codeflow-framework` → `h-codeflow-framework`
-- 仓库地址：`gitlab.huaun.com/rd.huaun/ai.kg/ai/huaun-codeflow-framework` → `gitlab.huaun.com/rd.huaun/h-codeflow-framework`
-- 所有 Stub Marker 关键词同步更新：`huaun-codeflow-framework:core` → `h-codeflow-framework:core`
+- 仓库名称：`h-codeflow-framework` → `h-codeflow-framework`
+- 仓库地址：`gitlab.example.com/your-org/ai.kg/ai/h-codeflow-framework` → `gitlab.example.com/your-org/h-codeflow-framework`
+- 所有 Stub Marker 关键词同步更新：`h-codeflow-framework:core` → `h-codeflow-framework:core`
 - 所有脚本、文档、模板中的路径引用同步更新
 
 ### 下游项目升级指南
 
 &gt; ⚠️ **本次为不兼容变更**，下游项目需手动执行以下步骤：
 
-1. 克隆新仓库到与项目同级目录：`git clone git@gitlab.huaun.com:rd.huaun/h-codeflow-framework.git`
+1. 克隆新仓库到与项目同级目录：`git clone git@github.com:wwwweeia/codeflow-framework.git`
 2. 将项目 `.claude/` 下所有 `.md` 文件中的 marker 关键词替换：
    ```bash
-   find .claude -name "*.md" -exec sed -i '' 's/huaun-codeflow-framework/h-codeflow-framework/g' {} +
+   find .claude -name "*.md" -exec sed -i '' 's/h-codeflow-framework/h-codeflow-framework/g' {} +
    ```
 3. 更新项目 `CLAUDE.md` 中对框架目录的引用路径
 4. 执行升级：`bash ../h-codeflow-framework/tools/upgrade.sh`
@@ -433,7 +454,7 @@ description: h-codeflow-framework 版本历史与更新日志
 
 ### 新增
 
-**前端开发 Skill 三件套**（从 ai-lingzhi 项目验证后上提）
+**前端开发 Skill 三件套**（从 your-project 项目验证后上提）
 - `core/skills/frontend-api-integration/SKILL.md` — Vuex Store Action + axios 接口对接规范
 - `core/skills/frontend-create-component/SKILL.md` — Vue 2 组件创建模板与命名/样式/通信规则
 - `core/skills/frontend-create-module/SKILL.md` — 业务模块脚手架（路由 + Store + 列表页标准套件）
@@ -601,7 +622,7 @@ description: h-codeflow-framework 版本历史与更新日志
 
 ## 未来计划
 
-- [ ] **Phase 2**：ai-lingzhi 项目集成与验证
+- [ ] **Phase 2**：your-project 项目集成与验证
 - [ ] **Phase 3**：框架文档补充与 example 编写
 - [ ] **Phase 4**：脚本测试与容错能力增强
 - [ ] **Phase 5**：团队培训与推广

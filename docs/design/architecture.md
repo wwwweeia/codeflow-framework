@@ -16,7 +16,7 @@ next:
 ![架构总览](/assets/diagrams/architecture-v2.drawio.png)
 
 ```
-gitlab.huaun.com/rd.huaun/
+gitlab.example.com/your-org/
 │
 ├── h-codeflow-framework/          ★ 框架项目（编排层源）
 │   ├── core/                          通用编排文件
@@ -24,7 +24,7 @@ gitlab.huaun.com/rd.huaun/
 │   ├── templates/                     初始化模板
 │   └── docs/                          框架文档
 │
-├── ai-lingzhi/                        ★ 业务项目 A
+├── your-project/                        ★ 业务项目 A
 │   ├── CLAUDE.md                      项目协作指南
 │   ├── .claude/                       执行层（被管理 + 项目自定义）
 │   ├── <后端子项目>/

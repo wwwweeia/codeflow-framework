@@ -2,9 +2,9 @@
 # harvest.sh — 从下游项目收割验证过的框架变更（upgrade.sh 的逆操作）
 #
 # 用法（在框架目录执行）：
-#   sh tools/harvest.sh ../ai-lingzhi                      # 预览差异（dry-run）
-#   sh tools/harvest.sh --apply ../ai-lingzhi              # 实际写入 core/
-#   sh tools/harvest.sh --apply --include-new ../ai-lingzhi # 含新增文件
+#   sh tools/harvest.sh ../your-project                      # 预览差异（dry-run）
+#   sh tools/harvest.sh --apply ../your-project              # 实际写入 core/
+#   sh tools/harvest.sh --apply --include-new ../your-project # 含新增文件
 #
 # 功能：
 # 1. 扫描下游项目 .claude/ 下所有包含 "h-codeflow-framework:core" marker 的文件
@@ -68,8 +68,8 @@ for arg in "$@"; do
             echo "  --include-new：处理下游新增的、core/ 中不存在的文件"
             echo ""
             echo "示例:"
-            echo "  sh tools/harvest.sh ../ai-lingzhi"
-            echo "  sh tools/harvest.sh --apply ../ai-lingzhi"
+            echo "  sh tools/harvest.sh ../your-project"
+            echo "  sh tools/harvest.sh --apply ../your-project"
             exit 0
             ;;
         -*) error "未知参数：$arg"; exit 1 ;;
@@ -78,7 +78,7 @@ for arg in "$@"; do
 done
 
 if [[ -z "$PROJECT_DIR" ]]; then
-    error "请指定下游项目目录，例如：sh tools/harvest.sh ../ai-lingzhi"
+    error "请指定下游项目目录，例如：sh tools/harvest.sh ../your-project"
     exit 1
 fi
 

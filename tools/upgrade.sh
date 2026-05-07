@@ -2,7 +2,7 @@
 # upgrade.sh — 升级项目中的框架托管文件
 #
 # 用法（在项目目录执行）：
-#   cd ai-lingzhi
+#   cd your-project
 #   bash ../h-codeflow-framework/tools/upgrade.sh
 #   bash ../h-codeflow-framework/tools/upgrade.sh --dry-run        # 预览变化，不写入
 #   bash ../h-codeflow-framework/tools/upgrade.sh --dry-run --diff # 预览并显示详细 diff

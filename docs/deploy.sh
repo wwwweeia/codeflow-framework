@@ -19,7 +19,7 @@ else
 fi
 cd "$ROOT_DIR"
 
-REMOTE_HOST="${DOCS_REMOTE_HOST:-root@192.168.104.125}"
+REMOTE_HOST="${DOCS_REMOTE_HOST:-root@docs.example.com}"
 REMOTE_DIR="${DOCS_REMOTE_DIR:-/home/HCodeFlow}"
 
 # ── 参数解析 ──
@@ -37,7 +37,7 @@ for arg in "$@"; do
       echo "  --build-only 只触发远程构建，不同步文件"
       echo ""
       echo "环境变量："
-      echo "  DOCS_REMOTE_HOST  远程主机 (默认: root@192.168.104.125)"
+      echo "  DOCS_REMOTE_HOST  远程主机 (默认: root@docs.example.com)"
       echo "  DOCS_REMOTE_DIR   远程目录 (默认: /home/HCodeFlow)"
       exit 0
       ;;

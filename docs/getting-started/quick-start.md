@@ -22,7 +22,7 @@ next:
 
 ```bash
 # Clone 框架仓库
-git clone git@gitlab.huaun.com:rd.huaun/h-codeflow-framework.git
+git clone git@github.com:wwwweeia/codeflow-framework.git
 ```
 
 ### 2. Claude Code

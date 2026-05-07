@@ -415,7 +415,7 @@ plugins/java-mybatis/         ← Java 技术栈插件
 
 **方向二：遵从度实测**
 
-用 compliance-tests.md 的 16 个测试用例，在真实项目（如 ai-lingzhi）中跑一轮。记录实际结果，形成"框架遵从度基线"。
+用 compliance-tests.md 的 16 个测试用例，在真实项目（如 your-project）中跑一轮。记录实际结果，形成"框架遵从度基线"。
 
 **方向三：使用数据收集**
 

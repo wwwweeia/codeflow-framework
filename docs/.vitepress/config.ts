@@ -87,8 +87,8 @@ export default defineConfig({
         ],
       },
       {
-        text: 'GitLab',
-        link: 'https://gitlab.huaun.com/rd.huaun/h-codeflow-framework',
+        text: 'GitHub',
+        link: 'https://github.com/wwwweeia/codeflow-framework',
       },
     ],
 
@@ -254,14 +254,14 @@ export default defineConfig({
     // ── 编辑链接 ──
     editLink: {
       pattern:
-        'https://gitlab.huaun.com/rd.huaun/h-codeflow-framework/-/edit/develop/docs/:path',
+        'https://github.com/wwwweeia/codeflow-framework/-/edit/develop/docs/:path',
       text: '在 GitLab 上编辑此页面',
     },
 
     // ── 页脚 ──
     footer: {
       // message: 'Huaun AI Group',
-      copyright: 'Copyright ©️ 2026, 北京华云安信息技术有限公司',
+      copyright: 'Copyright ©️ 2026, CodeFlow Contributors',
     },
 
     // ── 其他 ──

@@ -59,10 +59,10 @@ FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh
 cd h-codeflow-framework
 
 # 先看 diff
-bash tools/harvest.sh ../ai-lingzhi
+bash tools/harvest.sh ../your-project
 
 # 确认后写入
-bash tools/harvest.sh --apply ../ai-lingzhi
+bash tools/harvest.sh --apply ../your-project
 ```
 
 ### `release.sh` — 发版通知

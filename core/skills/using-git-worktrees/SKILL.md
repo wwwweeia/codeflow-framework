@@ -37,7 +37,7 @@ git check-ignore -q .worktrees 2>/dev/null
 ```bash
 # 后端 worktree（工作流 C）
 git worktree add .worktrees/feature-<name>-backend -b feature/<name>-backend
-cd .worktrees/feature-<name>-backend/ai-kg-agent-hub
+cd .worktrees/feature-<name>-backend/backend-service
 
 # 前端 worktree（工作流 C）
 git worktree add .worktrees/feature-<name>-frontend -b feature/<name>-frontend

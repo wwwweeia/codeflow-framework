@@ -86,9 +86,9 @@ AI 的判断依据参见 `core/rules/framework_protection.md` 中的判断原则
 
 ## 7.5 示例：一次 AI 驱动的框架迭代
 
-**场景**：ai-lingzhi 项目的 AI 在开发中发现 Dev Agent 自测阶段没有强制要求证据，判断这是公司级改进。
+**场景**：your-project 项目的 AI 在开发中发现 Dev Agent 自测阶段没有强制要求证据，判断这是公司级改进。
 
 1. **AI 修改并告知**：修改 `.claude/agents/dev-agent.md` marker 上方内容，增加证据要求，告知用户这是公司级改动
-2. **用户联系基础设施组**：基础设施组在框架目录执行 `bash tools/harvest.sh ../ai-lingzhi` 审查 diff
+2. **用户联系基础设施组**：基础设施组在框架目录执行 `bash tools/harvest.sh ../your-project` 审查 diff
 3. **收割并发版**：`harvest.sh --apply` 写入 core/ → 更新 VERSION → `release.sh --confirm`
 4. **所有项目升级**：各项目执行 `upgrade.sh`，自动继承新的证据要求

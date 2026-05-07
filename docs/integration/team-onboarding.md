@@ -20,7 +20,7 @@ next: false
 确保团队成员能访问框架仓库：
 
 ```
-git@gitlab.huaun.com:rd.huaun/h-codeflow-framework.git
+git@github.com:wwwweeia/codeflow-framework.git
 ```
 
 ### 2. Claude Code 准备
