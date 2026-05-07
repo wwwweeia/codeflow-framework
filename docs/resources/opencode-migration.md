@@ -1,13 +1,13 @@
 ---
 title: OpenCode CLI 迁移指南
-description: 将 codeflow-framework 的 .claude 模板体系适配到 OpenCode CLI 的完整映射与操作指南
+description: 将 h-codeflow-framework 的 .claude 模板体系适配到 OpenCode CLI 的完整映射与操作指南
 prev: /resources/codex-migration
 next: false
 ---
 
 # OpenCode CLI 迁移指南
 
-> **背景**：团队当前使用 Claude Code + codeflow-framework 的 `.claude/` 模板体系。当需要在 [OpenCode](https://opencode.ai) CLI 中复用同一套 Spec-Driven Development 工作流规范时，需要对配置格式做适配。本文档是手动迁移的操作手册。
+> **背景**：团队当前使用 Claude Code + h-codeflow-framework 的 `.claude/` 模板体系。当需要在 [OpenCode](https://opencode.ai) CLI 中复用同一套 Spec-Driven Development 工作流规范时，需要对配置格式做适配。本文档是手动迁移的操作手册。
 
 ---
 

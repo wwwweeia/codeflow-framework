@@ -16,7 +16,7 @@ description: E2E 测试知识库。当需要为项目新 Feature 编写/运行 P
 
 ### 核心决策：API 直接登录（不走浏览器）
 
-登录需要验证码（OCR 不稳定），因此 **auth.setup.ts 使用 Node.js HTTP API 直接调用登录接口**，避免浏览器渲染。
+灵智 AI 登录需要验证码（OCR 不稳定），因此 **auth.setup.ts 使用 Node.js HTTP API 直接调用登录接口**，避免浏览器渲染。
 
 **流程**：
 ```
@@ -227,7 +227,7 @@ export class XxxPage extends BasePage {
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| E2E_BASE_URL | https://your-server-ip | 被测服务器地址 |
+| E2E_BASE_URL | https://192.168.104.125 | 被测服务器地址 |
 | E2E_USERNAME | aikg | 登录用户名 |
 | E2E_PASSWORD | admin123 | 登录密码 |
 | E2E_HEADLESS | true | 是否无头模式 |
@@ -371,4 +371,4 @@ await pqPage.screenshot('preset-questions', 'ac01')  // → .evidence/preset-que
 import { XxxPage } from '../../pages/xxx.page'
 const SESSION_FILE = path.join(__dirname, '..', '..', '.auth', 'session-storage.json')
 ```
-<!-- codeflow-framework:core v1.9.0-20260421 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

@@ -2,12 +2,12 @@
 # harvest.sh — 从下游项目收割验证过的框架变更（upgrade.sh 的逆操作）
 #
 # 用法（在框架目录执行）：
-#   sh tools/harvest.sh ../your-project                      # 预览差异（dry-run）
-#   sh tools/harvest.sh --apply ../your-project              # 实际写入 core/
-#   sh tools/harvest.sh --apply --include-new ../your-project # 含新增文件
+#   sh tools/harvest.sh ../ai-lingzhi                      # 预览差异（dry-run）
+#   sh tools/harvest.sh --apply ../ai-lingzhi              # 实际写入 core/
+#   sh tools/harvest.sh --apply --include-new ../ai-lingzhi # 含新增文件
 #
 # 功能：
-# 1. 扫描下游项目 .claude/ 下所有包含 "codeflow-framework:core" marker 的文件
+# 1. 扫描下游项目 .claude/ 下所有包含 "h-codeflow-framework:core" marker 的文件
 # 2. 提取 marker 行及以上的内容（框架管理部分）
 # 3. 与 core/ 对应文件做 diff 对比
 # 4. --apply 模式下写入 core/，更新 marker 版本号
@@ -68,8 +68,8 @@ for arg in "$@"; do
             echo "  --include-new：处理下游新增的、core/ 中不存在的文件"
             echo ""
             echo "示例:"
-            echo "  sh tools/harvest.sh ../your-project"
-            echo "  sh tools/harvest.sh --apply ../your-project"
+            echo "  sh tools/harvest.sh ../ai-lingzhi"
+            echo "  sh tools/harvest.sh --apply ../ai-lingzhi"
             exit 0
             ;;
         -*) error "未知参数：$arg"; exit 1 ;;
@@ -78,7 +78,7 @@ for arg in "$@"; do
 done
 
 if [[ -z "$PROJECT_DIR" ]]; then
-    error "请指定下游项目目录，例如：sh tools/harvest.sh ../your-project"
+    error "请指定下游项目目录，例如：sh tools/harvest.sh ../ai-lingzhi"
     exit 1
 fi
 
@@ -118,7 +118,7 @@ fi
 header "扫描下游项目文件"
 
 MANAGED_FILES_TEMP=$(mktemp)
-grep -r "codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" 2>/dev/null | cut -d: -f1 | sort -u > "$MANAGED_FILES_TEMP" || true
+grep -r "<!-- h-codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" --include="*.sh" --include="*.yaml" --include="*.yml" 2>/dev/null | cut -d: -f1 | sort -u > "$MANAGED_FILES_TEMP" || true
 
 MANAGED_COUNT=$(wc -l < "$MANAGED_FILES_TEMP" | tr -d ' ')
 
@@ -158,15 +158,15 @@ else
     warn "未找到 MANIFEST，跳过范围检查"
 fi
 
-# ─── 版本检查（框架为主原则） ─────────────────────────────────────────────
-# upgrade.sh 只更新有内容变化的文件的 marker，所以取所有文件的最大版本号
+# ─── 版本信息展示 ─────────────────────────────────────────────
+# 取下游所有文件的最大 marker 版本号（仅用于日志展示）
 DOWNSTREAM_VERSION=""
 MAX_VERSION="0.0.0-00000000"
 
 while IFS= read -r MF; do
     [[ -z "$MF" ]] && continue
-    MF_VER=$(grep -oE "codeflow-framework:core v[^ ]+" "$MF" \
-             | tail -1 | sed 's/codeflow-framework:core v//' | tr -d '[:space:]')
+    MF_VER=$(grep -oE "h-codeflow-framework:core v[^ ]+" "$MF" \
+             | tail -1 | sed 's/h-codeflow-framework:core v//' | tr -d '[:space:]')
     if [[ -n "$MF_VER" ]] && [[ "$MF_VER" != X* ]]; then
         # 比较当前版本与已知的最大版本
         VERSION_CMP_TMP=0
@@ -182,31 +182,8 @@ DOWNSTREAM_VERSION="$MAX_VERSION"
 if [[ -n "$DOWNSTREAM_VERSION" ]]; then
     info "下游项目版本：$DOWNSTREAM_VERSION"
     info "框架版本：    $FRAMEWORK_VERSION"
-
-    # || 避免 set -e 捕获非零返回码
-    VERSION_CMP=0
-    compare_versions "$DOWNSTREAM_VERSION" "$FRAMEWORK_VERSION" || VERSION_CMP=$?
-
-    if [[ $VERSION_CMP -eq 2 ]]; then
-        echo ""
-        error "下游项目版本 ($DOWNSTREAM_VERSION) 低于框架版本 ($FRAMEWORK_VERSION)"
-        error "直接收割会用旧内容覆盖框架新内容，导致新增规则丢失"
-        echo ""
-        warn "请先在下游项目执行升级："
-        echo ""
-        echo "  cd $PROJECT_DIR"
-        echo "  bash ../codeflow-framework/tools/upgrade.sh"
-        echo ""
-        warn "升级后再执行 harvest.sh"
-        rm "$MANAGED_FILES_TEMP"
-        exit 1
-    elif [[ $VERSION_CMP -eq 0 ]]; then
-        success "版本一致，可以安全收割"
-    else
-        info "下游版本高于框架版本，将收割验证过的内容"
-    fi
 else
-    warn "未能从下游文件提取版本号，跳过版本检查"
+    warn "未能从下游文件提取版本号"
 fi
 
 # ─── 备份与收割 ───────────────────────────────────────────────────────────
@@ -220,6 +197,7 @@ MARKER_ONLY_FILES=""
 SHRINK_RISK_FILES=""
 CORE_MODIFIED_COUNT=0
 CORE_MODIFIED_FILES=""
+VERSION_SKIP_COUNT=0
 
 # 初始化批量 hash 写入
 batch_write_init
@@ -231,7 +209,7 @@ while IFS= read -r TARGET_FILE; do
     SOURCE_FILE="$FRAMEWORK_CORE/$RELATIVE_PATH"
 
     # 查找下游文件的 marker 行号（取最后一个，跳过代码块内的 template marker）
-    MARKER_LINE=$(grep -n "codeflow-framework:core" "$TARGET_FILE" | tail -1 | cut -d: -f1)
+    MARKER_LINE=$(grep -n "<!-- h-codeflow-framework:core" "$TARGET_FILE" | tail -1 | cut -d: -f1)
 
     if [[ -z "$MARKER_LINE" ]]; then
         warn "未找到 marker，跳过：$RELATIVE_PATH"
@@ -242,7 +220,7 @@ while IFS= read -r TARGET_FILE; do
     HARVESTED_CONTENT=$(head -n "$MARKER_LINE" "$TARGET_FILE")
 
     # 将最后一行 marker 中的版本号更新为当前框架版本
-    HARVESTED_CONTENT=$(echo "$HARVESTED_CONTENT" | sed "$ s/codeflow-framework:core v[^ ]*/codeflow-framework:core v${FRAMEWORK_VERSION}/")
+    HARVESTED_CONTENT=$(echo "$HARVESTED_CONTENT" | sed "$ s/h-codeflow-framework:core v[^ ]*/h-codeflow-framework:core v${FRAMEWORK_VERSION}/")
 
     # ── 处理新文件（core/ 中不存在的）──
     if [[ ! -f "$SOURCE_FILE" ]]; then
@@ -262,6 +240,24 @@ while IFS= read -r TARGET_FILE; do
     # ── 比较内容差异（三分类） ──
     CURRENT_CORE=$(cat "$SOURCE_FILE")
 
+    # ── 逐文件版本检查（下游 marker 版本 < core/ marker 版本 → 跳过） ──
+    LOCAL_DS_VER=$(grep -oE "h-codeflow-framework:core v[^ ]+" "$TARGET_FILE" \
+                   | tail -1 | sed 's/h-codeflow-framework:core v//' | tr -d '[:space:]')
+    CORE_VER=$(grep -oE "h-codeflow-framework:core v[^ ]+" "$SOURCE_FILE" \
+               | head -1 | sed 's/h-codeflow-framework:core v//' | tr -d '[:space:]')
+
+    if [[ -n "$LOCAL_DS_VER" ]] && [[ -n "$CORE_VER" ]] \
+       && [[ "$LOCAL_DS_VER" != X* ]] && [[ "$CORE_VER" != X* ]]; then
+        VERSION_CMP_PF=0
+        compare_versions "$LOCAL_DS_VER" "$CORE_VER" || VERSION_CMP_PF=$?
+        if [[ $VERSION_CMP_PF -eq 2 ]]; then
+            printf "${YELLOW}[VERSION-SKIP]${NC} %s (下游 %s < core/ %s，请先 upgrade)\n" \
+                "$RELATIVE_PATH" "$LOCAL_DS_VER" "$CORE_VER"
+            VERSION_SKIP_COUNT=$((VERSION_SKIP_COUNT + 1))
+            continue
+        fi
+    fi
+
     # 完全一致 → 跳过
     if [[ "$HARVESTED_CONTENT" = "$CURRENT_CORE" ]]; then
         SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
@@ -269,14 +265,14 @@ while IFS= read -r TARGET_FILE; do
     fi
 
     # 去掉 marker 行后比较，判断是否为 marker-only 变更
-    CORE_NO_MARKER=$(echo "$CURRENT_CORE" | grep -v "codeflow-framework:core")
-    HARVESTED_NO_MARKER=$(echo "$HARVESTED_CONTENT" | grep -v "codeflow-framework:core")
+    CORE_NO_MARKER=$(echo "$CURRENT_CORE" | grep -v "h-codeflow-framework:core")
+    HARVESTED_NO_MARKER=$(echo "$HARVESTED_CONTENT" | grep -v "h-codeflow-framework:core")
 
     if [[ "$HARVESTED_NO_MARKER" = "$CORE_NO_MARKER" ]]; then
         # marker-only：仅版本号差异，不展示 diff
         MARKER_ONLY_COUNT=$((MARKER_ONLY_COUNT + 1))
-        LOCAL_DS_VER=$(grep -oE "codeflow-framework:core v[^ ]+" "$TARGET_FILE" \
-                       | tail -1 | sed 's/codeflow-framework:core v//' | tr -d '[:space:]')
+        LOCAL_DS_VER=$(grep -oE "h-codeflow-framework:core v[^ ]+" "$TARGET_FILE" \
+                       | tail -1 | sed 's/h-codeflow-framework:core v//' | tr -d '[:space:]')
         MARKER_ONLY_FILES="${MARKER_ONLY_FILES}  - ${RELATIVE_PATH}  (${LOCAL_DS_VER:-?} → ${FRAMEWORK_VERSION})\n"
         continue
     fi
@@ -416,10 +412,17 @@ else
     fi
 fi
 
+# 版本跳过汇总
+if [[ "$VERSION_SKIP_COUNT" -gt 0 ]]; then
+    echo ""
+    warn "$VERSION_SKIP_COUNT 个文件因下游版本低于 core/ 版本被跳过"
+    info "请在下游项目执行 upgrade.sh 后再收割这些文件"
+fi
+
 # 统计行
 echo ""
-printf "${BOLD}统计：${NC}一致 %d | marker-only %d | 实质变更 %d | core-修改 %d | 新文件 %d\n" \
-    "$SKIPPED_COUNT" "$MARKER_ONLY_COUNT" "$REAL_CHANGED_COUNT" "$CORE_MODIFIED_COUNT" "$NEW_COUNT"
+printf "${BOLD}统计：${NC}一致 %d | marker-only %d | 实质变更 %d | core-修改 %d | 版本跳过 %d | 新文件 %d\n" \
+    "$SKIPPED_COUNT" "$MARKER_ONLY_COUNT" "$REAL_CHANGED_COUNT" "$CORE_MODIFIED_COUNT" "$VERSION_SKIP_COUNT" "$NEW_COUNT"
 
 # 新文件提示
 if [[ "$NEW_COUNT" -gt 0 ]]; then

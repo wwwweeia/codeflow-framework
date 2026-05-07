@@ -2,15 +2,16 @@
 # release.sh — 框架发版脚本
 #
 # 用法：
-#   cd codeflow-framework
-#   sh tools/release.sh            # 预览模式（dry-run），审核发版内容
-#   sh tools/release.sh --confirm  # 正式发版（创建 tag + 推送 + 可选通知）
+#   cd h-codeflow-framework
+#   bash tools/release.sh            # 预览模式（dry-run），审核通知内容
+#   bash tools/release.sh --confirm  # 正式发版
 #
-# 流程：
+# 流程（--confirm）：
 # 1. 读取 VERSION，校验 CHANGELOG 中存在该版本记录
-# 2. 从 CHANGELOG 提取当前版本更新摘要
-# 3. 预览发版内容
-# 4. --confirm 时：创建 git tag、推送、发送通知（如配置了 NOTIFY_SCRIPT）
+# 2. 推送 develop 到远程
+# 3. 创建 tag 并推送
+# 4. 合并 develop → master 并推送
+# 5. 发送飞书通知
 
 set -euo pipefail
 
@@ -36,10 +37,8 @@ for arg in "$@"; do
         --confirm) CONFIRM=true ;;
         --help|-h)
             echo "用法: sh tools/release.sh [--confirm]"
-            echo "  默认：预览模式（dry-run），展示发版内容但不执行"
-            echo "  --confirm：正式发版（创建 tag + 推送 + 通知）"
-            echo ""
-            echo "通知配置：设置 NOTIFY_SCRIPT 环境变量指向通知脚本路径"
+            echo "  默认：预览模式（dry-run），展示通知内容但不发送"
+            echo "  --confirm：正式发送飞书通知"
             exit 0
             ;;
     esac
@@ -50,7 +49,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 FRAMEWORK_ROOT="$(dirname "$SCRIPT_DIR")"
 VERSION_FILE="$FRAMEWORK_ROOT/tools/VERSION"
 CHANGELOG_FILE="$FRAMEWORK_ROOT/CHANGELOG.md"
-NOTIFY_SCRIPT="${NOTIFY_SCRIPT:-}"
+NOTIFY_SCRIPT="$FRAMEWORK_ROOT/notify/notify-release.py"
 
 # ─── Step 1: 读取版本号 ────────────────────────────────────────────────────
 header "检查发版条件"
@@ -93,6 +92,7 @@ success "CHANGELOG 中已包含版本 ${VERSION} 的记录"
 # ─── Step 3: 提取 CHANGELOG 摘要 ──────────────────────────────────────────
 header "提取更新摘要"
 
+# 提取当前版本的 CHANGELOG 内容（从版本标题到下一个版本标题或文件末尾的分割线）
 CHANGELOG_CONTENT=$(awk "
     /^## \\[${VERSION}\\]/ { found=1; next }
     found && /^## \\[/      { exit }
@@ -105,6 +105,8 @@ if [[ -z "$CHANGELOG_CONTENT" ]]; then
     CHANGELOG_CONTENT="版本 ${VERSION} 已发布，请查看 CHANGELOG.md 了解详情。"
 fi
 
+# 飞书 lark_md 不支持 # 标题语法，转成加粗格式
+# ### 章节标题加 emoji 前缀，与 **子标题** 形成视觉层级
 CHANGELOG_SUMMARY=$(echo "$CHANGELOG_CONTENT" | sed \
       -e 's/^### 变更\(.*\)$/🔴 **变更\1**/g' \
     -e 's/^### 新增$/🟢 **新增**/g' \
@@ -115,13 +117,13 @@ CHANGELOG_SUMMARY=$(echo "$CHANGELOG_CONTENT" | sed \
 
 echo "$CHANGELOG_SUMMARY"
 
-# ─── Step 4: 预览 / 发版 ──────────────────────────────────────────────────
+# ─── Step 4: 预览 / 发送通知 ──────────────────────────────────────────────
 if [[ "$CONFIRM" != true ]]; then
     header "预览模式（dry-run）"
-    warn "以下为发版预览，不会实际执行"
+    warn "以下为飞书通知预览，不会实际发送"
     echo ""
     echo "────────────────────────────────────"
-    echo "📦 CodeFlow 框架新版本发布"
+    echo "📦 Codeflow 框架新版本发布"
     echo "────────────────────────────────────"
     echo "版本：$VERSION"
     echo "发布时间：$RELEASE_DATE"
@@ -131,15 +133,26 @@ if [[ "$CONFIRM" != true ]]; then
     echo ""
     echo "升级方式："
     echo "  cd your-project"
-    echo "  bash ../codeflow-framework/tools/upgrade.sh"
+    echo "  sh ../h-codeflow-framework/tools/upgrade.sh"
     echo "────────────────────────────────────"
     echo ""
-    info "确认无误后，执行以下命令正式发版："
+    info "确认无误后，执行以下命令正式发送通知："
     echo ""
     printf "  ${BOLD}sh tools/release.sh --confirm${NC}\n"
     echo ""
     exit 0
 fi
+
+# ─── 推送 develop ──────────────────────────────────────────────────────────
+header "推送 develop"
+
+CURRENT_BRANCH=$(git branch --show-current)
+if [[ "$CURRENT_BRANCH" != "develop" ]]; then
+    error "当前不在 develop 分支（当前: ${CURRENT_BRANCH}），发版必须在 develop 上执行"
+    exit 1
+fi
+
+git push origin develop 2>/dev/null && success "已推送 develop 到远程" || warn "develop 推送失败，请手动推送: git push origin develop"
 
 # ─── 创建 git tag ──────────────────────────────────────────────────────────
 header "创建版本 Tag"
@@ -155,16 +168,39 @@ success "已创建 tag: ${TAG_NAME}"
 
 git push origin "$TAG_NAME" 2>/dev/null && success "已推送 tag: ${TAG_NAME}" || warn "Tag 推送失败，请手动推送: git push origin ${TAG_NAME}"
 
-# ─── 发送通知（可选） ──────────────────────────────────────────────────────
-if [[ -n "$NOTIFY_SCRIPT" && -f "$NOTIFY_SCRIPT" ]]; then
-    header "发送通知"
-    python3 "$NOTIFY_SCRIPT" "$VERSION" "$RELEASE_DATE" "$CHANGELOG_SUMMARY"
-    success "通知已发送"
+# ─── 合并 develop → master ──────────────────────────────────────────────────
+header "合并 develop → master"
+
+# 保存当前分支，切换到 master，合并 develop，推送
+git checkout master 2>/dev/null
+git pull origin master 2>/dev/null
+
+if git merge develop --no-edit; then
+    success "已合并 develop → master"
+    git push origin master 2>/dev/null && success "已推送 master 到远程" || warn "master 推送失败，请手动推送: git push origin master"
 else
-    header "通知"
-    info "未配置 NOTIFY_SCRIPT 环境变量，跳过通知"
-    info "如需通知，设置 NOTIFY_SCRIPT 指向通知脚本路径"
+    error "合并 develop → master 失败，可能有冲突"
+    echo "请手动解决冲突后执行："
+    echo "  git add . && git commit --no-edit"
+    echo "  git push origin master"
 fi
 
-header "发版完成 🎉"
-success "版本 $VERSION 已发布"
+# 切回 develop
+git checkout develop 2>/dev/null
+success "已切回 develop 分支"
+
+# ─── 发送飞书通知 ──────────────────────────────────────────────────────────
+header "发送飞书通知"
+
+if [[ ! -f "$NOTIFY_SCRIPT" ]]; then
+    error "通知脚本不存在：$NOTIFY_SCRIPT"
+    exit 1
+fi
+
+python3 "$NOTIFY_SCRIPT" "$VERSION" "$RELEASE_DATE" "$CHANGELOG_SUMMARY"
+
+header "发版完成"
+success "版本 $VERSION 已发布并通知团队"
+success "  - develop 已推送远程"
+success "  - tag ${TAG_NAME} 已创建并推送"
+success "  - master 已合并并推送"

@@ -7,6 +7,7 @@ description: 前端架构设计产出规范。供 arch-agent 设计 02_technical
 
 > 本 Skill 面向 **arch-agent**，用于设计阶段产出 `02_technical_design.md` Part B。
 > 底层规范（路由结构、Store 模式、权限命名、API 调用规则、组件树）见 **frontend-conventions**。
+> 前端 UI 设计规范（组件选型策略、Token、页面模板、交互规范）见 **frontend-ui-design** Skill。
 > 本 Skill 专注于 **Part B 的产出格式和 Checklist**。
 
 ---
@@ -143,4 +144,4 @@ pages/<module>/detail.vue   ← 详情页（按需）
 | B-6 | API 调用清单 | 所有接口的 Action/Method/Path/Request/Response |
 | B-7 | 权限配置清单 | resourceCode 命名格式，菜单节点+按钮节点均列出 |
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

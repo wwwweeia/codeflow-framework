@@ -14,7 +14,7 @@ next:
 ## 3.1 Marker 格式
 
 ```markdown
-<!-- codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 ```
 
 每个被管理文件都包含此 marker，它是框架内容与项目自定义内容的**分界线**。
@@ -33,7 +33,7 @@ model: sonnet
 
 [框架定义的完整内容...]           ← upgrade.sh 全量替换此区域
 
-<!-- codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 
 ## 项目特定扩展                    ← 项目团队自由扩展，升级时永远保留
 
@@ -46,7 +46,7 @@ model: sonnet
 [框架定义的格式说明与填写规范...]   ← 框架维护的"骨架"
 [加载指导、维护说明...]
 
-<!-- codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v1.0.0-20260416 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 
 ## 项目业务词典                    ← 项目团队按格式填充实际业务定义
 
@@ -57,6 +57,8 @@ model: sonnet
 > **设计原因**：domain-ontology 的特殊性在于框架提供"格式骨架"，项目填充"业务内容"。marker 放中部既能让框架更新格式定义，又能保留项目已填充的业务词典。
 
 ## 3.3 工作原理
+
+![Stub 标记机制](/assets/diagrams/marker-mechanism-v2.drawio.png)
 
 升级时，`upgrade.sh` 对每个被管理文件执行以下操作：
 

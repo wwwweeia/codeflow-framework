@@ -540,7 +540,7 @@ evidence-qa-review.md（逐项核对 01 AC + 02 设计 + 代码质量）
 |------|------|---------|
 | Claude Code | 已安装并登录 | `claude --version` |
 | 项目 CLAUDE.md | 已填写项目基本信息 | 项目根目录存在 `CLAUDE.md` |
-| `.claude/` 目录 | 框架文件已同步 | 执行 `bash ../codeflow-framework/tools/upgrade.sh` |
+| `.claude/` 目录 | 框架文件已同步 | 执行 `bash ../h-codeflow-framework/tools/upgrade.sh` |
 | 编码规则 | `coding_backend.md` / `coding_frontend_shared.md` 已存在 | 检查 `.claude/rules/` |
 | 前置知识 | 领域词典（domain-ontology）已填充 | 检查 `.claude/skills/domain-ontology/SKILL.md` |
 
@@ -552,7 +552,7 @@ evidence-qa-review.md（逐项核对 01 AC + 02 设计 + 代码质量）
 |--------|----------|---------|
 | 业务需求 | Intake 三问需要你澄清目标/边界/验收 | 自己最清楚 |
 | 路由判定 | 知道你的需求走哪个工作流 | [工作流体系](/design/workflow) |
-| Spec 审批 | 01 和 02 需要你判断"方向对不对" | 本文 + [概念速查表](/guide/concepts) |
+| Spec 审批 | 01 和 02 需要你判断"方向对不对" | 本文 + [概念详解](/getting-started/concepts) |
 | 技术栈差异 | 不同项目可能用不同框架（Vue 2 vs Vue 3） | 项目级 `coding_frontend_shared.md` |
 
 ### 7.3 每个环节你做什么
@@ -622,7 +622,7 @@ QA 审查（自动，你看结果）
 
 ## 9. 给新成员的建议
 
-1. **先跑 Demo 再上项目**：用 `sh reset-demo.sh --base` 重置 demo，按本文的步骤走一遍
+1. **先跑 Demo 再上项目**：用 `bash reset-demo.sh --base` 重置 demo，按本文的步骤走一遍
 2. **审批是核心**：01 和 02 的审批是你控制方向的唯一机会——认真看，但不纠结于技术细节
 3. **Spec 是真相源**：所有代码实现都追溯到 Spec，如果 Spec 错了，代码一定错
 4. **QA 比你细心**：让 AI 审查 AI 的代码，它会逐项核对每个 AC、每个字段映射
@@ -630,7 +630,7 @@ QA 审查（自动，你看结果）
 
 ### 如果你想自己试一次
 
-1. `cd demo && sh reset-demo.sh --base`（重置到初始状态）
+1. `cd demo && bash reset-demo.sh --base`（重置到初始状态）
 2. 启动 Claude Code，输入 `/demo-workflow-a`
 3. 跟着 Intake 三问走，审批 02 技术设计
 4. 看 Dev 自动实现，看 QA 自动审查

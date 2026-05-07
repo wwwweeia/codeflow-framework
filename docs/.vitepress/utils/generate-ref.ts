@@ -27,13 +27,16 @@ function ensureDir(dir: string) {
 
 /** 截断 marker 行，只保留 marker 上方的框架管理内容 */
 function stripMarker(content: string): string {
-  return content.replace(/<!-- codeflow-framework:core[\s\S]*$/, '').trimEnd()
+  return content.replace(/<!-- h-codeflow-framework:core[\s\S]*$/, '').trimEnd()
 }
 
-/** 将内容包装为 :::details 折叠块，## 标题降级为粗体避免污染页面 outline */
+/** 将内容包装为 :::details 折叠块，h1-h6 标题降级为粗体避免污染页面 outline */
 function wrapInDetails(summary: string, content: string): string {
-  // ## 标题降级为粗体，避免 details 内标题出现在页面右侧 TOC
-  let cleaned = content.replace(/^##\s+(.+)$/gm, '**$1**')
+  // h1-h6 标题降级为粗体，避免 details 内标题出现在页面右侧 TOC
+  let cleaned = content.replace(/^#{1,6}\s+(.+)$/gm, '**$1**')
+  // 统一水平线：***、___、长串 ---- 等全部转为 ---，避免 *** 被解析为粗斜体标记
+  cleaned = cleaned.replace(/^[*_]{3,}$/gm, '---')
+  cleaned = cleaned.replace(/^-{3,}$/gm, '---')
   // 转义代码块外的 HTML 标签（如 <module>、<template>），防止 Vue 模板编译报错
   // 保留 blockquote（> text）和代码块内的内容不变
   cleaned = escapeHtmlOutsideCode(cleaned)
@@ -126,7 +129,7 @@ outline:
     const lines = agent.content.trim().split('\n')
     let summaryLines: string[] = []
     for (const line of lines) {
-      if (line.startsWith('#') || line.startsWith('---')) continue
+      if (line.startsWith('#') || /^[*_\-]{3,}$/.test(line.trim())) continue
       if (line.trim() === '') { if (summaryLines.length > 0) break; continue }
       summaryLines.push(line)
       if (summaryLines.length >= 3) break
@@ -284,11 +287,17 @@ outline:
     md += `## ${label} (\`${file}\`)\n\n`
     if (desc) md += `> ${desc}\n\n`
 
-    // 只取前几段文本作为摘要（跳过标题，避免污染页面 outline）
+    // 只取前几段文本作为摘要（跳过标题和代码块，避免污染页面 outline）
     const lines = content.trim().split('\n')
     let summaryLines: string[] = []
+    let inCodeBlock = false
     for (const line of lines) {
-      if (line.startsWith('#') || line.startsWith('---')) continue
+      if (/^(```|~~~)/.test(line.trimStart())) {
+        inCodeBlock = !inCodeBlock
+        continue
+      }
+      if (inCodeBlock) continue
+      if (line.startsWith('#') || /^[*_\-]{3,}$/.test(line.trim())) continue
       if (line.trim() === '' && summaryLines.length > 0) continue
       if (line.trim()) summaryLines.push(line)
       if (summaryLines.length >= 5) break
@@ -329,7 +338,7 @@ description: 框架版本历史
 
   return `---
 title: 更新日志
-description: codeflow-framework 版本历史与更新日志
+description: h-codeflow-framework 版本历史与更新日志
 ---
 
 # 更新日志

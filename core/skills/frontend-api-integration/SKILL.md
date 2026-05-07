@@ -65,4 +65,4 @@ async loadData() {
 3. **Token 注入**：`plugins/axios.js` 自动注入 Authorization，禁止手动设置
 4. **表格场景**：若接口用于封装表格组件加载数据，Store Action 须能接收 `pageNumber` / `pageSize` 参数，通过 `tableConfig.uri` 配置（格式为 `{module}/{action}`，不是 HTTP 路径）
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

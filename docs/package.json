@@ -1,21 +1,21 @@
 {
-  "name": "codeflow-framework-docs",
+  "name": "h-codeflow-framework-docs",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "codeflow-framework 文档站",
+  "description": "h-codeflow-framework 文档站",
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview",
-    "docs:generate-ref": "tsx .vitepress/utils/generate-ref.ts",
-    "docs:export-diagrams": "mmdc -i diagrams/architecture.mmd -o public/images/architecture.png -w 1200 -b white && mmdc -i diagrams/workflow-routing.mmd -o public/images/workflow-routing.png -w 1200 -b white && mmdc -i diagrams/agent-collaboration.mmd -o public/images/agent-collaboration.png -w 1200 -b white && mmdc -i diagrams/sync-cycle.mmd -o public/images/sync-cycle.png -w 1200 -b white"
+    "docs:generate-ref": "tsx .vitepress/utils/generate-ref.ts"
   },
   "devDependencies": {
     "gray-matter": "^4.0.3",
-    "mermaid": "^11.14.0",
     "tsx": "^4.19.0",
-    "vitepress": "^1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.17"
+    "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "medium-zoom": "^1.1.0"
   }
 }

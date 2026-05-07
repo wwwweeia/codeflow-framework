@@ -1,5 +1,4 @@
 import { defineConfig, type Plugin } from 'vitepress'
-import { withMermaid } from 'vitepress-plugin-mermaid'
 import * as path from 'node:path'
 import { generateRefPages } from './utils/generate-ref'
 
@@ -31,11 +30,11 @@ function hmrRefPages(): Plugin {
   }
 }
 
-export default withMermaid({
-  // GitHub Pages 部署需要设置项目路径，本地预览时改为 '/'
-  base: '/codeflow-framework/',
+export default defineConfig({
+  // GitLab Pages 部署时改为 '/h-codeflow-framework/'，本地预览用 '/'
+  base: '/',
 
-  // 构建输出到项目根目录的 public/（适用于 GitHub Pages）
+  // GitLab Pages 要求输出到项目根目录的 public/
   outDir: '../public',
   cacheDir: '.vitepress/cache',
 
@@ -43,12 +42,12 @@ export default withMermaid({
   ignoreDeadLinks: true,
 
   lang: 'zh-CN',
-  title: 'CodeFlow',
+  title: 'HCodeFlow',
   description: '确定性优先的 AI 开发框架，用结构化规范把不确定性消除在执行之前',
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { property: 'og:title', content: 'CodeFlow' }],
+    ['meta', { property: 'og:title', content: 'HCodeFlow' }],
     ['meta', { property: 'og:description', content: '确定性优先的 AI 开发框架' }],
   ],
 
@@ -65,8 +64,8 @@ export default withMermaid({
 
     // ── 顶部导航 ──
     nav: [
-      { text: '理念', link: '/guide/philosophy' },
-      { text: '指南', link: '/guide/quick-start' },
+      { text: '入门', link: '/getting-started/what-is-sdd' },
+      { text: '项目接入', link: '/integration/new-project' },
       { text: '架构详述', link: '/design/overview' },
       { text: '案例', link: '/cases/' },
       { text: '学习资源', link: '/resources/' },
@@ -83,40 +82,58 @@ export default withMermaid({
       {
         text: '帮助',
         items: [
-          { text: '常见问题', link: '/guide/faq' },
-          { text: '故障排查', link: '/guide/troubleshooting' },
+          { text: '常见问题', link: '/getting-started/faq' },
+          { text: '故障排查', link: '/getting-started/troubleshooting' },
         ],
       },
       {
-        text: 'GitHub',
-        link: 'https://github.com/wwwweeia/codeflow-framework',
+        text: 'GitLab',
+        link: 'https://gitlab.huaun.com/rd.huaun/h-codeflow-framework',
       },
     ],
 
     // ── 侧边栏 ──
     sidebar: {
-      '/guide/': [
+      '/getting-started/': [
         {
-          text: '理念',
+          text: '认识框架',
           items: [
-            { text: '设计理念', link: '/guide/philosophy' },
+            { text: '认识 SDD', link: '/getting-started/what-is-sdd' },
+            { text: '快速入门', link: '/getting-started/quick-start' },
+            { text: '端到端教程', link: '/getting-started/tutorial' },
           ],
         },
         {
-          text: '入门指南',
+          text: '深入理解',
           items: [
-            { text: '快速入门', link: '/guide/quick-start' },
-            { text: '概念速查表', link: '/guide/concepts' },
-            { text: '项目接入检查清单', link: '/guide/onboarding' },
-            { text: '工具速查', link: '/guide/tools' },
-            { text: '动手练习手册', link: '/guide/exercises' },
+            { text: '概念详解', link: '/getting-started/concepts' },
+            { text: '术语速查', link: '/getting-started/glossary' },
+            { text: '设计理念', link: '/getting-started/philosophy' },
+          ],
+        },
+        {
+          text: '工具与练习',
+          items: [
+            { text: '工具速查', link: '/getting-started/tools' },
+            { text: '动手练习', link: '/getting-started/exercises' },
           ],
         },
         {
           text: '帮助',
           items: [
-            { text: '常见问题', link: '/guide/faq' },
-            { text: '故障排查指南', link: '/guide/troubleshooting' },
+            { text: '常见问题', link: '/getting-started/faq' },
+            { text: '故障排查', link: '/getting-started/troubleshooting' },
+            { text: '框架反馈', link: '/getting-started/feedback' },
+          ],
+        },
+      ],
+      '/integration/': [
+        {
+          text: '项目接入',
+          items: [
+            { text: '新项目接入', link: '/integration/new-project' },
+            { text: '已有项目', link: '/integration/existing-project' },
+            { text: '团队接入', link: '/integration/team-onboarding' },
           ],
         },
       ],
@@ -193,7 +210,9 @@ export default withMermaid({
           text: '方法论与社区',
           items: [
             { text: 'SDD-RIPER 方法论', link: '/resources/sdd-riper-methodology' },
+            { text: 'GitHub spec-kit 全景解读', link: '/resources/github-spec-kit' },
             { text: '培养你的直觉', link: '/resources/building-intuition' },
+            { text: 'Superpowers 深度解读', link: '/resources/superpowers-deep-dive' },
             { text: '优质仓库推荐', link: '/resources/claude-code-awesome-repos' },
           ],
         },
@@ -208,12 +227,6 @@ export default withMermaid({
           text: '运维指南',
           items: [
             { text: 'CI/CD 自动化部署', link: '/resources/watchtower-cicd-guide' },
-          ],
-        },
-        {
-          text: '竞品对比分析',
-          items: [
-            { text: 'vs Superpowers', link: '/resources/vs-superpowers' },
           ],
         },
       ],
@@ -241,13 +254,14 @@ export default withMermaid({
     // ── 编辑链接 ──
     editLink: {
       pattern:
-        'https://github.com/wwwweeia/codeflow-framework/edit/main/docs/:path',
-      text: '在 GitHub 上编辑此页面',
+        'https://gitlab.huaun.com/rd.huaun/h-codeflow-framework/-/edit/develop/docs/:path',
+      text: '在 GitLab 上编辑此页面',
     },
 
     // ── 页脚 ──
     footer: {
-      copyright: 'Copyright ©️ 2026, MIT Licensed',
+      // message: 'Huaun AI Group',
+      copyright: 'Copyright ©️ 2026, 北京华云安信息技术有限公司',
     },
 
     // ── 其他 ──

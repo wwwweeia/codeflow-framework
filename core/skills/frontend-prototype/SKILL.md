@@ -165,6 +165,7 @@ FE Agent 在原型基础上直接修改（不重写）：
 - 必须使用 `<style scoped>`，防止样式污染
 - 深度选择器按项目约定使用（如 `:deep()`）
 - 间距、字体优先使用项目 SCSS 变量，不硬编码
+- 设计 Token（色彩/字体/间距/圆角/阴影）必须引用 `frontend-ui-design` §3 定义，禁止硬编码
 - 组件命名使用 PascalCase
 
 ---
@@ -188,4 +189,4 @@ marker 下方应由各项目填充以下内容（参考现有代码提取）：
 3. 查看 components/ 目录中的公共组件，记录 Props 和 Events
 4. 查看 assets/css/variables.scss（或等价文件），提取色彩变量
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

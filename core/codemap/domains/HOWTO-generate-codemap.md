@@ -167,4 +167,4 @@ QA PASS、代码合并后，主会话提示 arch-agent 更新对应 domain codem
 
 导航入口统一在 `.claude/specs/SPEC-INDEX.md` 的 `Domain Codemap` 列维护，不在此重复列举。
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

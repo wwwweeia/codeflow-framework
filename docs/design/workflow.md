@@ -29,23 +29,50 @@ next:
 
 ## 4.2 智能路由决策树
 
-```mermaid
-graph TD
-    input["需求已明确"] --> q0{"Q0: 轻量改动?<br/><small>≤3 文件 / bug fix</small>"}
-    q0 -->|"是"| lightweight["Q0 轻量模式<br/><small>sdd-riper-one-light</small>"]
-    q0 -->|"否"| q1{"Q1: 涉及后端?<br/><small>数据库 / API / 逻辑</small>"}
+![工作流路由](/assets/diagrams/workflow-routing-v2.drawio.png)
 
-    q1 -->|"是"| q3{"Q3: 同时涉及前端?"}
-    q1 -->|"否"| q2{"Q2: 涉及前端?<br/><small>页面 / 组件 / 交互</small>"}
+```
+需求已明确
+    ↓
+Q0: 是否轻量改动？（≤3 文件 / bug fix / 配置变更 / 不涉及新 API）
+    ├── 是 → Q0 轻量模式（sdd-riper-one-light 协议）
+    └── 否 ↓
+Q1: 是否涉及数据库 / API / 后端逻辑变更？
+    ├── 否 → Q2
+    └── 是 → Q3
+              ↓
+Q3: 是否同时涉及页面 / 交互变更？
+    ├── 否 → 工作流 A（纯后端）
+    └── 是 → 工作流 C（前后端联动）
 
-    q3 -->|"否"| wfA["工作流 A — 纯后端<br/><small>PM → Arch → Dev → QA</small>"]
-    q3 -->|"是"| wfC["工作流 C — 前后端联动<br/><small>PM → Arch → Dev + FE → QA</small>"]
-
-    q2 -->|"否"| nonfunc["非功能性变更<br/><small>直接处理</small>"]
-    q2 -->|"是"| wfB["工作流 B — 纯前端<br/><small>PM → Arch → FE → QA</small>"]
+Q2: 是否涉及页面 / 组件 / 样式 / 交互变更？
+    ├── 否 → 非功能性变更（直接处理）
+    └── 是 → 工作流 B（纯前端）
 ```
 
-## 4.3 四种工作流详解
+## 4.3 Skill 加载指引
+
+路由完成后，主会话在派发 Agent 时指定本次加载的 Skill 分组，避免不相关知识占用上下文：
+
+| 分类 | 包含 Skills | 说明 |
+|------|------------|------|
+| **core** | spec-templates、domain-ontology | 所有 Agent 必需 |
+| **backend** | backend-rules、api-reviewer、sql-checker | 后端/全栈模式 |
+| **frontend** | frontend-conventions、frontend-ui-design、frontend-create-* 等 | 前端/全栈模式 |
+| **optional** | jira-task-management、confluence-doc-sync | 检测到 MCP 可用时自动加载 |
+
+各工作流的加载组合：
+
+| 工作流 | PM | Arch | Dev/FE | QA |
+|--------|-----|------|--------|-----|
+| A 后端 | core | core+backend | core+backend | core+backend |
+| B 前端 | core | core+frontend | core+frontend | core+frontend |
+| C 全栈 | core | core+backend+frontend | core+对应端 | core+backend+frontend |
+| 轻量 | — | — | sdd-riper-one-light | — |
+
+> **注意**：Agent 的 YAML `skills` 字段是扁平列表，Claude Code 会自动加载全部。此指引帮助主会话在派发指令中明确"本次任务应关注哪些知识"，引导 Agent 聚焦。
+
+## 4.4 四种工作流详解
 
 ### Q0 轻量模式
 
@@ -136,7 +163,7 @@ graph TD
     → 产出：02_technical_design.md（Part A + B + D + E + C）
     → 用户 Approval
     ↓
-@dev-agent ⚡ @fe-agent（worktree 隔离并行）
+@dev-agent ⚡ @fe-agent（worktree 隔离并行，主会话必须使用 isolation: worktree 创建隔离环境）
     → Dev worktree: feature/<name>-backend
     → FE worktree: feature/<name>-frontend（有原型时先 merge）
     → 各自产出 04 后通知主对话
@@ -166,7 +193,7 @@ graph TD
 
 > `02_interface.md` 已废弃，其内容（API Contract、前端数据映射）合入 `02_technical_design.md`。
 
-## 4.4 合并前检查清单
+## 4.5 合并前检查清单
 
 合并任何 `feature/*`、`fix/*`、`refactor/*` 分支前，必须通过以下检查：
 
@@ -186,7 +213,7 @@ graph TD
 
 **全栈专项（1 项）**：API 契约一致性（设计文档 vs 后端实现 vs 前端调用）
 
-## 4.5 E2E 测试触发规则（可选）
+## 4.6 E2E 测试触发规则（可选）
 
 QA PASS 后、运行验证前，主会话**必须询问用户**是否执行 E2E 测试。
 
@@ -199,7 +226,7 @@ QA PASS 后、运行验证前，主会话**必须询问用户**是否执行 E2E 
 
 **跳过场景**：项目无 `e2e/` 目录、轻量流程（Q0 路由）。
 
-## 4.6 运行验证（Verification）
+## 4.7 运行验证（Verification）
 
 QA PASS 后、合并前，主会话必须组织运行验证：
 
@@ -209,7 +236,7 @@ QA PASS 后、合并前，主会话必须组织运行验证：
 | 前端页面 | B / C | 用户按 04 Part B 人工验证清单操作浏览器 | 用户反馈 |
 | 全栈联调 | C | 后端自动验证 + 前端人工验证 | 同上 |
 
-## 4.7 Deploy 阶段（可选）
+## 4.8 Deploy 阶段（可选）
 
 Deploy 是**可选、非阻塞**的。主会话只负责触发构建脚本并推送镜像，服务器部署由 Watchtower 异步完成。
 
@@ -220,7 +247,7 @@ Deploy 是**可选、非阻塞**的。主会话只负责触发构建脚本并推
 | E2E 测试 | QA PASS 后、E2E 前 | 需先部署再测试 |
 | 生产部署 | 合并后 | 代码已合并到 develop |
 
-## 4.8 Jira 集成（可选）
+## 4.9 Jira 集成（可选）
 
 Jira 集成是**可选的、非阻塞的**——未配置时所有 Jira 操作被静默跳过。
 

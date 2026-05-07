@@ -60,4 +60,4 @@ git push origin --delete feature/YYYYMMDD-xxx
 
 ---
 
-**版本**：1.10.0-20260422 | **Maintainer**: your-name | **更新日期**：2026-04-22
+**版本**：1.10.0-20260422 | **维护者**：wqw | **更新日期**：2026-04-22

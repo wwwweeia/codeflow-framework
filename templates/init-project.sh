@@ -3,7 +3,7 @@
 #
 # 用法（在新项目目录执行）：
 #   cd new-project
-#   sh ../codeflow-framework/templates/init-project.sh . "Project Name"
+#   sh ../h-codeflow-framework/templates/init-project.sh . "Project Name"
 #
 # 参数：
 #   $1: 项目根目录（通常为 .）
@@ -34,6 +34,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 BOLD='\033[1m'
+DIM='\033[2m'
 NC='\033[0m'
 
 info()    { printf "${BLUE}[INFO]${NC}   %s\n" "$1"; }
@@ -49,6 +50,22 @@ INIT_LEVEL="${3:-full}"
 
 PROJECT_DIR="$(cd "$PROJECT_DIR" 2>/dev/null && pwd)" || { error "项目目录不存在：$1"; exit 1; }
 
+# ─── 路径设置（提前，供后续检测使用）──────────────────────────────────────────
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+FRAMEWORK_ROOT="$(dirname "$SCRIPT_DIR")"
+FRAMEWORK_CORE="$FRAMEWORK_ROOT/core"
+FRAMEWORK_TEMPLATES="$SCRIPT_DIR"
+
+# ─── 防止在框架内部执行 ───────────────────────────────────────────────────────
+# 初始化脚本面向下游项目，在框架自身目录执行毫无意义且会污染 core/
+if [[ "$PROJECT_DIR" == "$FRAMEWORK_ROOT" ]] || [[ "$PROJECT_DIR" == "$FRAMEWORK_ROOT/"* ]]; then
+    error "不能在框架目录内执行初始化"
+    error "请在目标项目目录中运行，例如："
+    error "  cd /path/to/your-project"
+    error "  bash ../h-codeflow-framework/templates/init-project.sh . \"Project Name\""
+    exit 1
+fi
+
 # ─── 标准化级别参数 ─────────────────────────────────────────────────────────
 case "$INIT_LEVEL" in
     level1|minimal)  INIT_LEVEL="level1" ;;
@@ -57,12 +74,6 @@ case "$INIT_LEVEL" in
     level4|full)     INIT_LEVEL="full" ;;
     *)               error "未知初始化级别：${INIT_LEVEL}（可选：level1/level2/level3/full）"; exit 1 ;;
 esac
-
-# ─── 路径设置 ───────────────────────────────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-FRAMEWORK_ROOT="$(dirname "$SCRIPT_DIR")"
-FRAMEWORK_CORE="$FRAMEWORK_ROOT/core"
-FRAMEWORK_TEMPLATES="$SCRIPT_DIR"
 
 header "初始化项目：$PROJECT_NAME"
 
@@ -201,29 +212,42 @@ success "已复制 $COPIED_COUNT+ 个框架文件"
 header "复制项目模板文件"
 
 if [[ -f "$FRAMEWORK_TEMPLATES/CLAUDE.md.template" ]]; then
-    sed "s/\${PROJECT_NAME}/$PROJECT_NAME/g" "$FRAMEWORK_TEMPLATES/CLAUDE.md.template" \
-        > "$PROJECT_DIR/CLAUDE.md"
-    success "已创建 CLAUDE.md"
+    if [[ -f "$PROJECT_DIR/CLAUDE.md" ]]; then
+        info "CLAUDE.md 已存在，跳过（如需重置请先删除）"
+    else
+        sed "s/\${PROJECT_NAME}/$PROJECT_NAME/g" "$FRAMEWORK_TEMPLATES/CLAUDE.md.template" \
+            > "$PROJECT_DIR/CLAUDE.md"
+        success "已创建 CLAUDE.md"
+    fi
 fi
 
 # 复制共享编码规范到根目录 .claude/rules/（子项目规则文件会引用这些）
 for tpl in coding_frontend_shared.md.template coding_backend.md.template; do
     if [[ -f "$FRAMEWORK_TEMPLATES/$tpl" ]]; then
         target_name="${tpl%.template}"
-        sed "s/\${PROJECT_NAME}/$PROJECT_NAME/g" "$FRAMEWORK_TEMPLATES/$tpl" \
-            > "$PROJECT_DIR/.claude/rules/$target_name"
-        success "已创建 .claude/rules/$target_name"
+        if [[ -f "$PROJECT_DIR/.claude/rules/$target_name" ]]; then
+            info "$target_name 已存在，跳过（如需重置请先删除）"
+        else
+            sed "s/\${PROJECT_NAME}/$PROJECT_NAME/g" "$FRAMEWORK_TEMPLATES/$tpl" \
+                > "$PROJECT_DIR/.claude/rules/$target_name"
+            success "已创建 .claude/rules/$target_name"
+        fi
     fi
 done
 
 # ─── 复制 MCP 配置模板 ──────────────────────────────────────────────────
 if [[ -f "$FRAMEWORK_TEMPLATES/mcp-config.json.template" ]]; then
-    cp "$FRAMEWORK_TEMPLATES/mcp-config.json.template" "$PROJECT_DIR/.mcp.json"
-    # 确保 .mcp.json 在 .gitignore 中
-    if [[ -f "$PROJECT_DIR/.gitignore" ]]; then
-        grep -qxF '.mcp.json' "$PROJECT_DIR/.gitignore" 2>/dev/null || echo '.mcp.json' >> "$PROJECT_DIR/.gitignore"
+    if [[ -f "$PROJECT_DIR/.mcp.json" ]]; then
+        info ".mcp.json 已存在，跳过（如需重置请先删除）"
+    else
+        cp "$FRAMEWORK_TEMPLATES/mcp-config.json.template" "$PROJECT_DIR/.mcp.json"
+        # 确保 .mcp.json 和 .backup 在 .gitignore 中
+        if [[ -f "$PROJECT_DIR/.gitignore" ]]; then
+            grep -qxF '.mcp.json' "$PROJECT_DIR/.gitignore" 2>/dev/null || echo '.mcp.json' >> "$PROJECT_DIR/.gitignore"
+            grep -qxF '.claude/.backup/' "$PROJECT_DIR/.gitignore" 2>/dev/null || echo '.claude/.backup/' >> "$PROJECT_DIR/.gitignore"
+        fi
+        warn "已创建 .mcp.json（MCP 配置模板）——请编辑填写 Jira/Confluence 凭据和服务路径"
     fi
-    warn "已创建 .mcp.json（MCP 配置模板）——请编辑填写 Jira/Confluence 凭据和服务路径"
 fi
 
 # ─── 初始化 git（如需）────────────────────────────────────────────────────
@@ -320,18 +344,16 @@ printf '%b\n' "
 ${GREEN}✓ 框架文件已初始化（级别：${INIT_LEVEL}）${NC}
 ${GREEN}✓ 初始化清单已生成：.claude/setup-checklist.md${NC}
 
-${BOLD}下一步${NC}：在新会话中执行 ${BLUE}/init-setup${NC} 或说「继续初始化」
-         AI 将逐步自动完成项目配置（能检测的自动填，需要输入的主动问）
+${BOLD}下一步${NC}：在项目目录启动一个新的 Claude 会话
+  ${BLUE}cd $PROJECT_DIR && claude${NC}
 
-  查看进度：${BLUE}/init-setup --status${NC}
-  跳过任务：${BLUE}/init-setup --skip T3${NC}
-  直接跳转：${BLUE}/init-setup T2${NC}
+  然后执行 ${BLUE}/init-setup${NC}，AI 会引导你逐步完成项目配置：
+  检测技术栈、生成编码规范、配置工作流规则等（能自动检测的直接填好，需要决策的会主动问你）
 
-${BOLD}升级到更高级别${NC}：重新执行初始化脚本并指定 level2/level3/full 参数
-  sh $0 $PROJECT_DIR \"$PROJECT_NAME\" full
+  ${DIM}查看进度：/init-setup --status${NC}
+  ${DIM}跳过任务：/init-setup --skip T6${NC}
+  ${DIM}直接跳转：/init-setup T3${NC}
 
 ${BOLD}项目目录：${NC} $PROJECT_DIR
-${BOLD}框架目录：${NC} $FRAMEWORK_ROOT
-
-祝开发顺利！"
+${BOLD}框架目录：${NC} $FRAMEWORK_ROOT"
 

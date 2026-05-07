@@ -21,4 +21,4 @@ QA 给出 `PASS`、运行验证通过、用户确认合并后，**主会话**执
 
 **注意**：参考 `CLAUDE.md` 中的分支策略确定基础分支和合并规则。
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

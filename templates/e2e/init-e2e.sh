@@ -3,7 +3,7 @@
 #
 # 用法（在项目根目录执行）：
 #   cd new-project
-#   sh ../codeflow-framework/templates/e2e/init-e2e.sh . "Project Name"
+#   sh ../h-codeflow-framework/templates/e2e/init-e2e.sh . "Project Name"
 #
 # 参数：
 #   $1: 项目根目录（通常为 .）
@@ -48,6 +48,29 @@ header "初始化 E2E 测试基础设施：$PROJECT_NAME"
 info "项目目录：$PROJECT_DIR"
 info "E2E 目录：$E2E_DIR"
 info "模板目录：$SCRIPT_DIR"
+
+# ─── 依赖预检 ─────────────────────────────────────────────────────────────
+header "检查外部依赖"
+
+MISSING_DEPS=0
+
+if command -v python3 &> /dev/null; then
+  success "python3: $(python3 --version)"
+else
+  warn "python3: 未安装（ddddocr OCR 识别需要 Python3）"
+  MISSING_DEPS=1
+fi
+
+if command -v python3 &> /dev/null && python3 -c "import ddddocr" 2>/dev/null; then
+  success "ddddocr: 已安装"
+else
+  warn "ddddocr: 未安装（运行 pip3 install ddddocr 安装）"
+  MISSING_DEPS=1
+fi
+
+if [[ $MISSING_DEPS -ne 0 ]]; then
+  info "部分依赖缺失，E2E 初始化可继续，但运行时需要安装"
+fi
 
 # ─── 检查是否已存在 ───────────────────────────────────────────────────────
 if [[ -d "$E2E_DIR" ]]; then
@@ -163,8 +186,8 @@ ${BOLD}目录说明：${NC}
   │   └── auth.setup.ts  认证 setup（已完成）
   ├── pages/          POM 页面对象（base.page.ts + login.page.ts 已提供）
   ├── fixtures/       Playwright fixtures（auth.fixture.ts 已提供）
-  ├── utils/          工具函数（api-login.ts + encryption.ts 已提供）
-  ├── scripts/        辅助脚本（read_captcha.swift 已提供）
+  ├── utils/          工具函数（api-login.ts + encryption.ts + ocr.ts 已提供）
+  ├── scripts/        辅助脚本（ocr_captcha.py 已提供，需 pip3 install ddddocr）
   ├── .auth/          认证产物（已 gitignore）
   ├── .evidence/      运行时截图（已 gitignore）
   ├── playwright.config.ts

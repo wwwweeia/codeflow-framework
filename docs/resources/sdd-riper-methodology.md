@@ -2,7 +2,9 @@
 title: 阿里云 SDD-RIPER 方法论
 description: AI 原生研发范式：从代码中心到文档驱动的演进
 prev: false
-next: false
+next:
+  text: GitHub spec-kit 全景解读
+  link: /resources/github-spec-kit
 ---
 
 > 来源：阿里云「无岳」系列文章（2026年2-4月）

@@ -1,0 +1,80 @@
+<mxfile host="Electron" agent="Claude">
+  <diagram id="marker-mechanism-v2" name="Marker 机制图">
+    <mxGraphModel dx="1006" dy="781" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="30" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=1;fontColor=#BDBDBD;" value="旧版本&#xa;v1.9.0" vertex="1">
+          <mxGeometry height="30" width="120" x="239" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="31" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=1;fontColor=#0288D1;" value="新版本&#xa;v1.10.0" vertex="1">
+          <mxGeometry height="30" width="120" x="885" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;fontSize=12;verticalAlign=top;spacingTop=5;" value="&lt;b&gt;被管理文件（升级前）&lt;/b&gt;  例：project_rule.md" vertex="1">
+          <mxGeometry height="580" width="340" x="139" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#90CAF9;strokeWidth=1;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=5;fontColor=#1565C0;" value="框架管理区（marker 上方）" vertex="1">
+          <mxGeometry height="230" width="300" x="159" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];fontSize=10;fontColor=#37474F;fontFamily=Courier New;fillColor=#E3F2FD;spacingLeft=5;spacingTop=5;" value="---&#xa;name: project_rule&#xa;description: 工作流调度规则&#xa;---&#xa;&#xa;# 工作流规则&#xa;&#xa;## 1. Intake 规则&#xa;...&#xa;&#xa;## 2. 路由决策&#xa;...&#xa;&#xa;（v1.9 旧版框架内容）" vertex="1">
+          <mxGeometry height="190" width="280" x="169" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;strokeWidth=2;fontSize=10;fontColor=#E65100;fontFamily=Courier New;" value="&lt;!-- h-codeflow-framework:core &lt;b&gt;v1.9.0-20260301&lt;/b&gt; — DO NOT EDIT ABOVE THIS LINE --&gt;" vertex="1">
+          <mxGeometry height="30" width="300" x="159" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;strokeWidth=1;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=5;fontColor=#2E7D32;" value="项目自定义区（marker 下方）" vertex="1">
+          <mxGeometry height="240" width="300" x="159" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];fontSize=10;fontColor=#37474F;fontFamily=Courier New;fillColor=#E8F5E9;spacingLeft=5;spacingTop=5;" value="## 项目特有规则&#xa;&#xa;- 本项目使用 MySQL 8.0&#xa;- API 前缀: /api/v2/lingzhi/&#xa;- 分支策略: GitHub Flow&#xa;&#xa;（项目团队维护，升级时保留）" vertex="1">
+          <mxGeometry height="160" width="280" x="169" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#BDBDBD;strokeWidth=2;fontSize=12;verticalAlign=top;spacingTop=5;" value="&lt;b&gt;被管理文件（升级后）&lt;/b&gt;  例：project_rule.md" vertex="1">
+          <mxGeometry height="580" width="340" x="785" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#42A5F5;strokeWidth=2;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=5;fontColor=#0D47A1;" value="框架管理区（marker 上方）— ✨ 已更新" vertex="1">
+          <mxGeometry height="230" width="300" x="805" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];fontSize=10;fontColor=#37474F;fontFamily=Courier New;fillColor=#BBDEFB;spacingLeft=5;spacingTop=5;" value="---&#xa;name: project_rule&#xa;description: 工作流调度规则&#xa;---&#xa;&#xa;# 工作流规则&#xa;&#xa;## 1. Intake 规则（优化）&#xa;...&#xa;&#xa;## 2. 路由决策（新增 Q0）&#xa;...&#xa;&#xa;（v1.10 新版框架内容）" vertex="1">
+          <mxGeometry height="190" width="280" x="815" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;strokeWidth=2;fontSize=10;fontColor=#E65100;fontFamily=Courier New;" value="&lt;!-- h-codeflow-framework:core &lt;b&gt;v1.10.0-20260422&lt;/b&gt; — DO NOT EDIT ABOVE THIS LINE --&gt;" vertex="1">
+          <mxGeometry height="30" width="300" x="805" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;strokeWidth=1;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=5;fontColor=#2E7D32;" value="项目自定义区（marker 下方）— ✋ 不变" vertex="1">
+          <mxGeometry height="240" width="300" x="805" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];fontSize=10;fontColor=#37474F;fontFamily=Courier New;fillColor=#E8F5E9;spacingLeft=5;spacingTop=5;" value="## 项目特有规则&#xa;&#xa;- 本项目使用 MySQL 8.0&#xa;- API 前缀: /api/v2/lingzhi/&#xa;- 分支策略: GitHub Flow&#xa;&#xa;（项目团队维护，升级时保留）" vertex="1">
+          <mxGeometry height="160" width="280" x="815" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="20" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=blockThin;endFill=1;strokeColor=#0288D1;strokeWidth=4;fontSize=14;fontStyle=1;labelBackgroundColor=#FFFFFF;fontColor=#0288D1;" value="upgrade.sh&#xa;只替换 marker 上方&#xa;保留 marker 下方">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="522" y="340" as="sourcePoint" />
+            <mxPoint x="732" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="40" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;fontSize=11;fontStyle=1;verticalAlign=top;spacingTop=3;" value="图例" vertex="1">
+          <mxGeometry height="50" width="1040" x="120" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="41" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#42A5F5;" value="" vertex="1">
+          <mxGeometry height="15" width="30" x="140" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="42" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=11;fontColor=#1565C0;" value="框架管理区（marker 上方）— upgrade 时更新" vertex="1">
+          <mxGeometry height="25" width="290" x="180" y="695" as="geometry" />
+        </mxCell>
+        <mxCell id="43" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;" value="" vertex="1">
+          <mxGeometry height="15" width="30" x="490" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="44" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=11;fontColor=#E65100;" value="Marker 分界线 — 标记框架内容与项目内容的边界" vertex="1">
+          <mxGeometry height="25" width="310" x="530" y="695" as="geometry" />
+        </mxCell>
+        <mxCell id="45" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#A5D6A7;" value="" vertex="1">
+          <mxGeometry height="15" width="30" x="860" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="46" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=11;fontColor=#2E7D32;" value="项目自定义区（marker 下方）— upgrade 时保留" vertex="1">
+          <mxGeometry height="25" width="120" x="900" y="695" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -39,6 +39,7 @@ rules/project_rule.md           core rule
 rules/merge_checklist.md        core rule
 rules/framework_protection.md   core rule
 rules/knowledge-protocol.md     core rule
+rules/iron-rules.md             core rule
 
 # ── Context（始终同步）──────────────────────────────────────────────────────
 context/codemap-template.md     core context
@@ -61,6 +62,8 @@ skills/sql-checker              level2 skill
 skills/backend-rules            level2 skill
 skills/frontend-conventions     level2 skill
 skills/frontend-arch-design     level2 skill
+skills/frontend-ui-design       level2 skill
+skills/part-e-templates          level2 skill
 
 # level3 — 专业级
 skills/using-git-worktrees      level3 skill
@@ -68,6 +71,9 @@ skills/frontend-create-component level3 skill
 skills/frontend-create-module   level3 skill
 skills/frontend-api-integration level3 skill
 skills/framework-feedback       level3 skill
+skills/qa-review-framework      level3 skill
+skills/dev-workflow-common         level3 skill
+skills/self-test-checklist         level3 skill
 
 # full — 完整版
 skills/frontend-prototype       full skill

@@ -41,7 +41,7 @@ ai-crawlers/
 
 ```bash
 cd /path/to/ai-crawlers
-sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
+bash ../h-codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 ```
 
 选择 `full` 级别是因为项目需要完整功能（7 个 Agent + E2E + Jira 集成）。
@@ -52,7 +52,7 @@ sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 ═══ 初始化项目：AI Crawlers ═══
 [INFO]   项目目录：/path/to/ai-crawlers
 [INFO]   项目名称：AI Crawlers
-[INFO]   框架目录：/path/to/codeflow-framework
+[INFO]   框架目录：/path/to/h-codeflow-framework
 [INFO]   初始化级别：full
 [OK]     框架已验证
 
@@ -89,13 +89,13 @@ sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 ### 关键点
 
 - 脚本**自动检测**了 4 个子项目（1 个后端 + 3 个前端），并为每个子项目生成了独立的 `.claude/` 脚手架
-- `setup-checklist.md` 包含 8 个待办任务（full 级别包含全部任务；level1 只有 T1/T2/T5）
+- `setup-checklist.md` 包含 8 个待办任务（full 级别包含全部任务；level1 只有 T1/T2/T3）
 
 ---
 
 ## 三、Phase 2：/init-setup 逐任务配置
 
-在新会话中说「继续初始化」，AI 读取 `setup-checklist.md` 从 T1 开始逐步执行。
+在新会话中说「继续初始化」，AI 读取 `setup-checklist.md` 从 P1 阶段开始逐步执行。
 
 ### T1 — 填充 CLAUDE.md（自动检测 → 用户补充）
 
@@ -117,7 +117,7 @@ sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 
 > 团队成员与角色？
 
-用户回答：**后端负责人 your-name，前端待补充**
+用户回答：**后端负责人 wangqw，前端待补充**
 
 > 关键约束或已知坑点？
 
@@ -137,7 +137,7 @@ sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 
 ---
 
-### T2 — 填充业务词典（实体扫描 → 术语确认）
+### T3 — 填充业务词典（实体扫描 → 术语确认）
 
 **AI 自动检测的内容**：
 
@@ -172,7 +172,7 @@ sh ../codeflow-framework/templates/init-project.sh . "AI Crawlers" full
 
 ---
 
-### T3 — MCP 集成（跳过）
+### T6 — MCP 集成（跳过）
 
 AI 检测到 `.mcp.json` 已创建但凭据为空，询问是否配置。
 
@@ -180,7 +180,7 @@ AI 检测到 `.mcp.json` 已创建但凭据为空，询问是否配置。
 
 AI 标记为 `skipped`。
 
-> **什么情况下跳过**：本地开发不使用 Jira 管理任务、不使用 Confluence 管理文档时。团队内部用协作工具 管理的也可以跳过。
+> **什么情况下跳过**：本地开发不使用 Jira 管理任务、不使用 Confluence 管理文档时。团队内部用飞书或 GitLab 管理的也可以跳过。
 
 ---
 
@@ -216,7 +216,7 @@ AI 标记为 `skipped`。
 
 ---
 
-### T5 — 框架升级（跳过）
+### T2 — 框架升级（跳过）
 
 AI 检测到刚执行 `init-project.sh`，当前版本与框架一致。
 
@@ -226,7 +226,7 @@ AI 检测到刚执行 `init-project.sh`，当前版本与框架一致。
 
 ---
 
-### T6 — 完善子项目上下文（后端技术栈填充）
+### T7 — 完善子项目上下文（后端技术栈填充）
 
 AI 重点填充了 `data-collect-system/.claude/context/tech-stack.md`：
 
@@ -247,7 +247,7 @@ AI 重点填充了 `data-collect-system/.claude/context/tech-stack.md`：
 
 ---
 
-### T7 — 确认 Spec 目录结构（信息确认）
+### T8 — 确认 Spec 目录结构（信息确认）
 
 AI 检查 `.claude/specs/` 目录为空。
 
@@ -257,7 +257,7 @@ AI 提示：**首次创建 Feature 时，PM Agent 会自动创建 Spec 文件**
 
 ---
 
-### T8 — E2E 测试基础设施（跳过）
+### T9 — E2E 测试基础设施（跳过）
 
 AI 检测到无 `e2e/` 目录、无 `playwright.config.ts`。
 
@@ -272,13 +272,13 @@ AI 检测到无 `e2e/` 目录、无 `playwright.config.ts`。
 | 任务 | 状态 | 耗时 | AI 自动 | 用户补充 |
 |------|------|------|---------|---------|
 | T1 CLAUDE.md | ✅ done | ~3 min | 技术栈、目录结构、部署配置 | 项目定位、团队、约束 |
-| T2 业务词典 | ✅ done | ~5 min | 实体/枚举/API 扫描 | 中文术语、业务规则、关系 |
-| T3 MCP 集成 | ⊘ skipped | ~0.5 min | 文件存在性检查 | 确认跳过 |
+| T2 框架升级 | ⊘ skipped | ~0.5 min | 版本号比对 | 确认跳过 |
+| T3 业务词典 | ✅ done | ~5 min | 实体/枚举/API 扫描 | 中文术语、业务规则、关系 |
 | T4 编码规范 | ✅ done | ~3 min | 代码风格采样、lint 配置 | 确认 + 补充微前端约定 |
-| T5 框架升级 | ⊘ skipped | ~0.5 min | 版本号比对 | 确认跳过 |
-| T6 子项目上下文 | ✅ done | ~4 min | Maven 结构、实体、API、中间件 | 确认 + 补充约束 |
-| T7 Spec 目录 | ✅ done | ~0.5 min | 目录检查 | 确认 |
-| T8 E2E 测试 | ⊘ skipped | ~0.5 min | 环境检查 | 确认跳过 |
+| T6 MCP 集成 | ⊘ skipped | ~0.5 min | 文件存在性检查 | 确认跳过 |
+| T7 子项目上下文 | ✅ done | ~4 min | Maven 结构、实体、API、中间件 | 确认 + 补充约束 |
+| T8 Spec 目录 | ✅ done | ~0.5 min | 目录检查 | 确认 |
+| T9 E2E 测试 | ⊘ skipped | ~0.5 min | 环境检查 | 确认跳过 |
 
 **总计**：约 17 分钟，其中 5 个任务 done、3 个 skipped。
 
@@ -295,15 +295,15 @@ ai-crawlers/
 │   │   ├── coding_backend.md          ← T4 已填充
 │   │   └── coding_frontend_shared.md  ← T4 已填充
 │   ├── skills/
-│   │   ├── domain-ontology/SKILL.md   ← T2 已填充
+│   │   ├── domain-ontology/SKILL.md   ← T3 已填充
 │   │   └── ... (24 个 Skill)
 │   ├── commands/ (8 个)               ← 框架管理
 │   ├── context/                       ← 框架模板
-│   ├── specs/                         ← 空（T7 确认）
+│   ├── specs/                         ← 空（T8 确认）
 │   ├── codemap/                       ← 空
 │   └── setup-checklist.md             ← 全部 done/skipped
 ├── data-collect-system/.claude/
-│   └── context/tech-stack.md          ← T6 已填充
+│   └── context/tech-stack.md          ← T7 已填充
 ├── ai-kg-front/.claude/               ← 初始化脚手架
 ├── h-kg-collection/.claude/           ← 初始化脚手架
 └── h-kg-system/.claude/               ← 初始化脚手架
@@ -318,22 +318,22 @@ ai-crawlers/
 | 阶段 | 耗时 | 占比 |
 |------|------|------|
 | init-project.sh 执行 | ~1 分钟 | 5% |
-| T1-T8 逐任务配置 | ~17 分钟 | 85% |
+| 逐任务配置 | ~17 分钟 | 85% |
 | 验证和检查 | ~2 分钟 | 10% |
 | **合计** | **~20 分钟** | 100% |
 
 ### 关键决策点
 
 1. **初始化级别选择**：选 `full` 还是 `level1`？
-   - `level1`（最小）：只有 T1(CLAUDE.md) + T2(词典) + T5(upgrade)，适合快速体验
+   - `level1`（最小）：只有 T1(CLAUDE.md) + T2(升级) + T3(词典)，适合快速体验
    - `full`（完整）：含 E2E + Jira 集成，适合正式项目
    - **建议**：先用 `level1` 体验，后续需要时重新执行 init 升级级别
 
 2. **哪些任务可以跳过**：
-   - T3 MCP：不用 Jira/Confluence 的团队可跳过
-   - T5 upgrade：刚 init 时跳过
-   - T8 E2E：不需要 E2E 测试时可跳过
-   - 其他任务建议全部完成，尤其是 T1 和 T2
+   - T6 MCP：不用 Jira/Confluence 的团队可跳过
+   - T2 upgrade：刚 init 时跳过
+   - T9 E2E：不需要 E2E 测试时可跳过
+   - 其他任务建议全部完成，尤其是 T1 和 T3
 
 3. **AI 自动检测 vs 用户手动**：
    - 技术栈、代码风格、实体结构 → AI 自动检测（准确率 90%+）
@@ -341,8 +341,8 @@ ai-crawlers/
 
 ### 给新接入者的建议
 
-1. **先确保框架目录同级**：`codeflow-framework` 和业务项目在同一级目录，init 脚本和 upgrade 脚本才能正常工作
-2. **T1 和 T2 优先级最高**：CLAUDE.md 是 AI 理解项目的入口，业务词典是 AI 使用正确术语的基础。这两个做好，后续 AI 的产出质量会明显提升
+1. **先确保框架目录同级**：`h-codeflow-framework` 和业务项目在同一级目录，init 脚本和 upgrade 脚本才能正常工作
+2. **T1 和 T3 优先级最高**：CLAUDE.md 是 AI 理解项目的入口，业务词典是 AI 使用正确术语的基础。这两个做好，后续 AI 的产出质量会明显提升
 3. **验证后再提交**：用 `/init-setup --status` 检查所有任务状态，确认无误后再 `git add .claude/ CLAUDE.md`
-4. **marker 下方才是你的**：编辑 rules、skills 等文件时，只在 `<!-- codeflow-framework:core ... -->` 这行**下方**写内容，上方会被 `upgrade.sh` 覆盖
-5. **后续升级**：框架发布新版本后，执行 `bash ../codeflow-framework/tools/upgrade.sh --dry-run` 先预览变更
+4. **marker 下方才是你的**：编辑 rules、skills 等文件时，只在 `<!-- h-codeflow-framework:core ... -->` 这行**下方**写内容，上方会被 `upgrade.sh` 覆盖
+5. **后续升级**：框架发布新版本后，执行 `bash ../h-codeflow-framework/tools/upgrade.sh --dry-run` 先预览变更

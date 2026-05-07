@@ -6,7 +6,7 @@ argument-hint: [--dry-run] [--diff]
 
 # 升级框架托管文件
 
-从 codeflow-framework 拉取最新 core/ 内容，更新当前项目 `.claude/` 下的框架托管文件，保留 marker 下方的项目自定义内容。
+从 h-codeflow-framework 拉取最新 core/ 内容，更新当前项目 `.claude/` 下的框架托管文件，保留 marker 下方的项目自定义内容。
 
 ## 参数
 
@@ -19,8 +19,8 @@ argument-hint: [--dry-run] [--diff]
 
 ### 1. 定位框架目录
 
-按以下顺序查找 `codeflow-framework`：
-1. `../codeflow-framework`（最常见的同级目录布局）
+按以下顺序查找 `h-codeflow-framework`：
+1. `../h-codeflow-framework`（最常见的同级目录布局）
 2. 用户指定的路径
 
 找不到则提示用户手动指定框架路径。
@@ -30,7 +30,7 @@ argument-hint: [--dry-run] [--diff]
 **始终先 dry-run**：
 
 ```bash
-bash ../codeflow-framework/tools/upgrade.sh --dry-run --diff
+bash ../h-codeflow-framework/tools/upgrade.sh --dry-run --diff
 ```
 
 展示将要更新的文件列表和差异。
@@ -45,7 +45,7 @@ bash ../codeflow-framework/tools/upgrade.sh --dry-run --diff
 请求用户输入 `yes` 确认后执行：
 
 ```bash
-bash ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 ```
 
 ### 4. 验证结果
@@ -70,7 +70,7 @@ git diff     # 查看具体差异
 如需使用实验分支（如 `exp/xxx`），提示用户：
 
 ```bash
-FRAMEWORK_BRANCH=exp/xxx bash ../codeflow-framework/tools/upgrade.sh
+FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh
 ```
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

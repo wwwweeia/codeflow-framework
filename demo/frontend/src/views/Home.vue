@@ -9,7 +9,7 @@
       v-if="showBanner"
       type="success"
       title="欢迎使用 AI Prompt Lab"
-      description="codeflow-framework 让 AI Coding 有序可循"
+      description="h-codeflow-framework 让 AI Coding 有序可循"
       center
       show-icon
       closable

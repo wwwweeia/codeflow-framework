@@ -61,5 +61,6 @@ export default {
    - 跨组件共享状态：Vuex
    - 微前端跨应用通信（如适用）：`window.dispatchEvent(new CustomEvent(...))`，必须在 `beforeDestroy` 中 `removeEventListener`
 5. **Options API**：使用 `data()`、`computed`、`methods`、`watch`，禁止 Composition API
+6. **UI 规范合规**：新建组件必须遵循 `frontend-ui-design` §8 业务组件开发规范（特别是 §8.3 风格一致性 6 项硬约束），提交前通过 §10 合规检查清单自检
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

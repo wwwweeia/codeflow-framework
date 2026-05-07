@@ -214,4 +214,4 @@ classDiagram
 - **保持精简**：总长度建议控制在 200 行以内，超出则说明 Research 范围太宽，需拆分
 - **时效性**：每次 Feature QA PASS 后，主会话提示 arch-agent 更新 `domains/` 对应文件，保持与最新代码对齐（第 7 节清空占位，第 4/5/6 节更新）
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

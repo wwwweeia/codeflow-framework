@@ -2,17 +2,17 @@
 
 ## 框架是什么
 
-本项目的 `.claude/` 目录中有部分文件由公司级框架 **codeflow-framework** 统一管理。框架的目的是让所有业务项目共享经过验证的工作流、Agent 行为、审查规则和开发规范，避免各项目各自为政、重复踩坑。
+本项目的 `.claude/` 目录中有部分文件由公司级框架 **h-codeflow-framework** 统一管理。框架的目的是让所有业务项目共享经过验证的工作流、Agent 行为、审查规则和开发规范，避免各项目各自为政、重复踩坑。
 
 框架采用**两层分离**架构：
-- **框架层**（`../codeflow-framework/core/`）：公司级通用内容，通过 `upgrade.sh` 同步到各项目
+- **框架层**（`../h-codeflow-framework/core/`）：公司级通用内容，通过 `upgrade.sh` 同步到各项目
 - **项目层**（本项目 `.claude/`）：项目特有的业务规则、领域知识、自定义扩展
 
 ## Marker 机制与双向同步
 
 被框架管理的文件包含一行 marker 注释：
 ```
-<!-- codeflow-framework:core vX.X.X-YYYYMMDD — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 ```
 
 - **marker 上方**：框架管理的内容，执行 `upgrade.sh` 时会被框架最新版本覆盖
@@ -74,7 +74,7 @@
 如果是新建的规则、Skill 或 Agent 文件，且判断为公司级内容，在文件末尾添加 marker：
 
 ```
-<!-- codeflow-framework:core vX.X.X-YYYYMMDD — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
 ```
 
 其中版本号使用当前项目中已有 marker 的版本号（查看任意一个已有 marker 文件即可获取）。
@@ -87,4 +87,4 @@
 1. 你做了什么改动、为什么判断为公司级
 2. 请用户联系 **AI 基础设施组**，由基础设施组审查后合并到框架、发布新版本，再通过 `upgrade.sh` 同步到所有项目
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

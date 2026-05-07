@@ -89,4 +89,4 @@ Ready to implement <feature-name>
 **Called by:**
 - **dev-agent** (工作流 C) - REQUIRED before executing backend tasks in parallel
 - **fe-agent** (工作流 C) - REQUIRED before executing frontend tasks in parallel
-<!-- codeflow-framework:core v1.9.0-20260421 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

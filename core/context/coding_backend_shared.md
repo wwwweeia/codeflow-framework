@@ -108,4 +108,4 @@
 - 禁止 force push
 - 禁止绕过 Git Hooks
 
-<!-- codeflow-framework:core v1.5.0-20260417 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

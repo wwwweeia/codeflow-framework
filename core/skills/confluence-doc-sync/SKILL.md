@@ -40,7 +40,7 @@ description: Confluence 文档同步集成规范。定义各 Agent 如何使用 
 配置指定一个默认父页面，所有 SDD 产出的新页面（需求文档、技术设计等）创建为其子页面。
 
 ```
-(parentPageId: 104497787)       ← 配置的默认父页面
+灵智 AI (parentPageId: 104497787)       ← 配置的默认父页面
 ├── 需求：XXX 功能                        ← Agent 创建
 ├── 技术设计：XXX 功能                     ← Agent 创建
 └── ...
@@ -153,4 +153,4 @@ Confluence 使用 **Storage Format (HTML)** 作为页面内容格式。创建或
 - 工作流照常进行，需求信息以用户直接提供为准
 - 不要因为 Confluence 不可用而中断任何工作流步骤
 - 不要在输出中提示"Confluence 连接失败"等信息（避免噪音）
-<!-- codeflow-framework:core v1.10.0-20260422 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

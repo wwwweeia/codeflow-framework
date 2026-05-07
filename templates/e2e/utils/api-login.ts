@@ -2,9 +2,9 @@ import https from 'https'
 import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
 import md5 from 'md5'
 import { encrypt } from './encryption'
+import { recognizeCaptcha } from './ocr'
 
 /**
  * API 直接登录模块
@@ -19,7 +19,6 @@ import { encrypt } from './encryption'
 const AUTH_DIR = path.join(__dirname, '..', '.auth')
 const SESSION_FILE = path.join(AUTH_DIR, 'session-storage.json')
 const CAPTCHA_IMAGE = path.join(AUTH_DIR, 'captcha.png')
-const OCR_SCRIPT = path.join(__dirname, '..', 'scripts', 'read_captcha.swift')
 
 interface LoginResponse {
   code: number
@@ -100,20 +99,9 @@ async function postMultipart(
   )
 }
 
-/** OCR 验证码 */
-function ocrCaptcha(imagePath: string): string | null {
-  try {
-    const result = execSync(`swift "${OCR_SCRIPT}" "${imagePath}"`, {
-      timeout: 10_000,
-      encoding: 'utf-8',
-    }).trim()
-    if (result && /^[A-Z0-9]{4}$/.test(result)) {
-      return result
-    }
-    return null
-  } catch {
-    return null
-  }
+/** OCR 验证码（ddddocr + Python） */
+async function ocrCaptcha(buffer: Buffer): Promise<string | null> {
+  return recognizeCaptcha(buffer)
 }
 
 export interface ApiLoginResult {
@@ -142,7 +130,7 @@ export async function apiLogin(
     fs.writeFileSync(CAPTCHA_IMAGE, captchaBuffer)
 
     // 2. OCR 识别
-    const captchaText = ocrCaptcha(CAPTCHA_IMAGE)
+    const captchaText = await ocrCaptcha(captchaBuffer)
     if (!captchaText) {
       console.log(`[API-Login] OCR 失败 (attempt ${attempt}/${maxOcrAttempts})`)
       continue

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目定位
 
-codeflow-framework 是一个**元框架项目**（不是应用项目），为多个业务项目提供统一的 Spec-Driven Development (SDD) 工作流规范、Agent 定义、质量检查规则和知识库。多个下游业务项目通过 `upgrade.sh` 从本仓库同步框架文件。
+h-codeflow-framework 是一个**元框架项目**（不是应用项目），为公司所有业务项目提供统一的 Spec-Driven Development (SDD) 工作流规范、Agent 定义、质量检查规则和知识库。多个下游业务项目通过 `upgrade.sh` 从本仓库同步框架文件。
 
 ## 核心架构
 
@@ -12,7 +12,7 @@ codeflow-framework 是一个**元框架项目**（不是应用项目），为多
 - **编排层**（本仓库 `core/`）：通用的工作流定义，版本化管理
 - **执行层**（下游项目 `.claude/`）：项目特有的业务规则和知识库
 
-**Stub Marker 机制**：被管理文件包含 `<!-- codeflow-framework:core vX.X.X-YYYYMMDD — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->` 标记。`upgrade.sh` 更新 marker 上方的框架内容，保留 marker 下方的项目自定义内容。修改 `core/` 下的文件时，必须确保 marker 存在且位置正确。
+**Stub Marker 机制**：被管理文件包含 `<!-- h-codeflow-framework:core vX.X.X-YYYYMMDD — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->` 标记。`upgrade.sh` 更新 marker 上方的框架内容，保留 marker 下方的项目自定义内容。修改 `core/` 下的文件时，必须确保 marker 存在且位置正确。
 
 ## 关键文件与职责
 
@@ -20,6 +20,7 @@ codeflow-framework 是一个**元框架项目**（不是应用项目），为多
 |------|------|---------|
 | `core/MANIFEST` | 框架管理文件清单（唯一真相源） | init/upgrade/harvest 三个脚本的文件范围 |
 | `core/agents/*.md` | 7 个 Agent 定义（PM/Arch/Dev/FE/QA/Prototype/E2E） | 所有下游项目的 Agent 行为 |
+| `core/rules/iron-rules.md` | 框架铁律（所有 Agent 共享的 6 条硬约束） | 所有 Agent 的行为底线 |
 | `core/rules/project_rule.md` | 工作流调度规则（Intake + 路由 + 验证） | 所有下游项目的工作流 |
 | `core/rules/merge_checklist.md` | 合并前检查清单 | 所有下游项目的合并流程 |
 | `core/skills/*/SKILL.md` | 知识库（SQL审查、API规范、Spec模板等） | 所有下游项目的审查规则 |
@@ -34,47 +35,47 @@ codeflow-framework 是一个**元框架项目**（不是应用项目），为多
 
 ```bash
 # 初始化新项目（在目标项目目录执行）
-sh ../codeflow-framework/templates/init-project.sh . "Project Name"
+bash ../h-codeflow-framework/templates/init-project.sh . "Project Name"
 
 # 升级下游项目的框架文件（在目标项目目录执行，自动 git pull 框架最新代码）
-bash ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 升级前预览哪些文件会变化（不写入）
-bash ../codeflow-framework/tools/upgrade.sh --dry-run
+bash ../h-codeflow-framework/tools/upgrade.sh --dry-run
 
 # 升级前预览并显示详细 diff（不写入）
-bash ../codeflow-framework/tools/upgrade.sh --dry-run --diff
+bash ../h-codeflow-framework/tools/upgrade.sh --dry-run --diff
 
 # 正式升级并显示 diff
-bash ../codeflow-framework/tools/upgrade.sh --diff
+bash ../h-codeflow-framework/tools/upgrade.sh --diff
 
 # 跳过冲突检测，强制覆盖
-bash ../codeflow-framework/tools/upgrade.sh --force
+bash ../h-codeflow-framework/tools/upgrade.sh --force
 
 # 跳过有冲突的文件（保留本地修改）
-bash ../codeflow-framework/tools/upgrade.sh --conflict=preserve
+bash ../h-codeflow-framework/tools/upgrade.sh --conflict=preserve
 
 # 有冲突时直接退出（CI 用）
-bash ../codeflow-framework/tools/upgrade.sh --conflict=fail
+bash ../h-codeflow-framework/tools/upgrade.sh --conflict=fail
 
 # 升级时指定框架分支（用于测试实验分支）
-FRAMEWORK_BRANCH=exp/xxx bash ../codeflow-framework/tools/upgrade.sh
+FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 从下游项目收割验证过的变更回 core/（在框架目录执行）
-sh tools/harvest.sh ../your-project              # 预览差异
-sh tools/harvest.sh --apply ../your-project      # 实际写入
+bash tools/harvest.sh ../ai-lingzhi              # 预览差异
+bash tools/harvest.sh --apply ../ai-lingzhi      # 实际写入
 
 # 发版预览（dry-run，不发送通知、不 push）
-sh tools/release.sh
+bash tools/release.sh
 
-# 正式发版（创建 tag + 推送 + 可选通知）
-sh tools/release.sh --confirm
+# 正式发送飞书群通知
+bash tools/release.sh --confirm
 
 # 在 demo 中验证框架变更（发版前必做）
 cd demo && bash ../tools/upgrade.sh --diff    # 升级并查看变更
 
 # 重置 demo 到初始状态（用于反复演示或验证）
-cd demo && sh reset-demo.sh --base
+cd demo && bash reset-demo.sh --base
 ```
 
 ```bash
@@ -86,17 +87,55 @@ bash tools/doctor.sh --json       # JSON 格式输出（CI 集成）
 
 ## 发版流程
 
-当框架内容变更需要发布新版本时，**必须按以下步骤执行**：
+### 开发阶段（不碰版本号和 CHANGELOG）
 
 1. **修改内容**：在 `core/`、`tools/`、`templates/` 等目录完成改动
-2. **Demo 验证**：在 `demo/` 中执行 `cd demo && bash ../tools/upgrade.sh`，确认变更效果符合预期（见下方"Demo 验证规则"）
-3. **更新版本号**：修改 `tools/VERSION`（格式：`MAJOR.MINOR.PATCH-YYYYMMDD`）
-4. **更新变更日志**：在 `CHANGELOG.md` 顶部添加新版本记录，格式参考已有条目
-5. **提交所有改动**：`git add` + `git commit`，确保工作区干净
-6. **预览发版**：执行 `sh tools/release.sh`，检查通知内容是否正确
-7. **正式发版**：执行 `sh tools/release.sh --confirm`，创建 git tag 并推送（可选发送通知）
+2. **Demo 验证**：`cd demo && bash ../tools/upgrade.sh`，确认变更效果（见下方"Demo 验证规则"）
+3. **提交**：用常规 commit message（`feat:`/`fix:`/`refactor:`）
+4. **不修改 `tools/VERSION`，不修改 `CHANGELOG.md`**
 
-**`release.sh` 会自动校验**：VERSION 与 CHANGELOG 一致性、dev 版本拦截。任何校验失败都会阻止发版并提示原因。通知功能需通过 `NOTIFY_SCRIPT` 环境变量配置。
+### 发版阶段（`/release-core` 命令）
+
+执行 `/release-core` 命令，一次性完成：
+
+1. 确认工作区干净
+2. 确定 MAJOR/MINOR/PATCH 版本号
+3. `git log <TAG>..HEAD --oneline` 找到所有未发布 commit
+4. **归纳为面向用户的 CHANGELOG 内容**（见下方"CHANGELOG 写作规范"）
+5. 更新 `tools/VERSION` + 在 `CHANGELOG.md` 顶部插入新版本记录
+6. 提交：`chore(release): 发布 vX.Y.Z-YYYYMMDD`
+7. `release.sh` 预览 → `release.sh --confirm`（打 tag + 发飞书通知）
+
+**`release.sh` 会自动校验**：VERSION 与 CHANGELOG 一致性、dev 版本拦截。任何校验失败都会阻止发送并提示原因。
+
+### CHANGELOG 写作规范
+
+CHANGELOG 面向**框架使用者**（下游项目开发者），不是内部开发日志。写作要求：
+
+**视角**：站在"升级后会怎样"的角度描述变更，不堆叠 commit 信息。
+
+**格式**：
+```markdown
+## [X.Y.Z-YYYYMMDD] - YYYY-MM-DD
+
+### 🟢 新增
+- **功能名称**：用户能做什么新事情（不说实现细节）
+
+### 🔵 改进
+- **改进内容**：用户体验有什么变化（不说行数、文件路径）
+
+### 🐛 修复
+- **#Issue** 简述修复的问题和影响
+
+### 📋 升级须知
+- 是否需要项目侧适配？直接 upgrade.sh 还是有额外步骤？
+- 是否有破坏性变更？
+```
+
+**原则**：
+- 说**改了什么、对用户有什么影响**，不说**怎么改的、改了多少行**
+- 保留 Issue 编号便于追溯，但不展开实现细节
+- 每个版本必须包含"升级须知"段，即使只写"无需项目侧适配"
 
 ### Demo 验证规则（发版前置条件）
 
@@ -114,9 +153,18 @@ cd demo && bash ../tools/upgrade.sh --diff
 
 **验证不通过的变更不得发版**，必须修复后重新验证。
 
-### Dev 版本约定（试验场模式）
+### Dev 版本约定（试验场推送）
 
-实验阶段可使用 dev 版本号，格式：`MAJOR.MINOR.PATCH-dev.N-YYYYMMDD`（如 `1.6.0-dev.1-20260418`）。
+开发中需要推送到下游项目验证时，临时设 dev 版本，测完恢复：
+
+```bash
+# 临时设 dev 版本
+echo "X.Y.Z-dev.1-$(date +%Y%m%d)" > tools/VERSION
+# 推送到试验项目
+FRAMEWORK_BRANCH=your-branch bash ../h-codeflow-framework/tools/upgrade.sh
+# 测完恢复 VERSION
+git checkout tools/VERSION
+```
 
 - dev 版本可通过 `upgrade.sh` 推送到试验项目，marker 会自动携带 dev 版本号
 - `release.sh` 会拒绝发布含 `-dev` 的版本，确保正式发版前必须去掉 dev 标记
@@ -124,10 +172,10 @@ cd demo && bash ../tools/upgrade.sh --diff
 
 ## 试验场工作流（双向同步）
 
-框架没有执行环境，变更需要在真实项目中验证。当前形成"demo 快速验证 → your-project 真实任务验证 → 沉淀"三层闭环：
+框架没有执行环境，变更需要在真实项目中验证。当前形成"demo 快速验证 → ai-lingzhi 真实任务验证 → 沉淀"三层闭环：
 
 - **`demo/`（首发验证）**：框架内自带的最小演示项目，所有 `core/` 变更**必须先在此验证**通过
-- **`your-project`（真实验证）**：真实下游项目，用于在业务场景中验证变更的实际效果
+- **`ai-lingzhi`（真实验证）**：真实下游项目，用于在业务场景中验证变更的实际效果
 
 ### 双向工具链
 
@@ -141,9 +189,9 @@ cd demo && bash ../tools/upgrade.sh --diff
 当需要在下游项目中实验新功能并沉淀回框架时：
 
 1. **框架侧开分支**：`git checkout -b exp/xxx`，修改 `core/`，VERSION 设为 dev 版本（如 `1.6.0-dev.1-20260418`）
-2. **推送到试验项目**：在 your-project 执行 `FRAMEWORK_BRANCH=exp/xxx bash ../codeflow-framework/tools/upgrade.sh`
+2. **推送到试验项目**：在 ai-lingzhi 执行 `FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh`
 3. **验证迭代**：在真实任务中使用，发现问题可直接修改 marker 上方内容
-4. **收割回框架**：在框架目录执行 `sh tools/harvest.sh ../your-project`（先 dry-run 看 diff），确认后 `--apply`
+4. **收割回框架**：在框架目录执行 `bash tools/harvest.sh ../ai-lingzhi`（先 dry-run 看 diff），确认后 `--apply`
 5. **正式发版**：去掉 VERSION 中的 `-dev`，更新 CHANGELOG，执行 `release.sh`
 
 ### 冲突检测机制
@@ -172,22 +220,24 @@ AI 在下游项目中改进了 marker 上方的框架内容（如优化了 Agent
 
 ```
 **[框架沉淀建议]**
-- 验证项目：your-project
+- 验证项目：ai-lingzhi
 - 涉及文件：.claude/rules/project_rule.md（marker 上方）
 - 改进内容：<具体描述>
-- 建议操作：在框架目录执行 `sh tools/harvest.sh ../your-project` 预览差异
+- 建议操作：在框架目录执行 `bash tools/harvest.sh ../ai-lingzhi` 预览差异
 ```
 
-## 通知系统（可选）
+## 通知系统
 
-`release.sh` 支持通过环境变量 `NOTIFY_SCRIPT` 指定通知脚本路径。配置后，发版时自动调用该脚本发送通知。未配置则跳过通知，仅创建 tag 和推送。
+| 文件 | 职责 |
+|------|------|
+| `notify/notify-release.py` | 框架发版飞书通知（构建卡片消息 + 发送） |
 
 ## 框架维护规则
 
 本仓库是框架源头，直接修改 `core/` 下的文件。以下规则仅适用于在本仓库工作时：
 
 1. **保持 marker 完整**：每个被管理文件必须包含 marker 行，且位置正确（通常在文件末尾或内容分界处），不要删除或移动
-2. **保持 Agent frontmatter**：修改 `core/agents/*.md` 时，保持 YAML frontmatter 结构（name、description、tools、model）
+2. **保持 Agent frontmatter**：修改 `core/agents/*.md` 时，保持 YAML frontmatter 结构（name、description、tools、model、skills）
 3. **同步更新 MANIFEST**：`core/MANIFEST` 是框架管理文件的**唯一真相源**，`init-project.sh`、`upgrade.sh`、`harvest.sh` 都依赖它决定文件范围。维护者只需编辑这一个文件即可控制同步范围，具体规则：
    - **新增文件**：在 `core/` 下创建新文件后，在 MANIFEST 对应分类中添加一行（如 `commands/new-cmd.md level2 command`），init 和 upgrade 会自动推送
    - **删除文件**：从 `core/` 删除文件后，从 MANIFEST 移除对应行，upgrade 会将下游残留标记为孤儿文件并提示清理
@@ -213,20 +263,29 @@ AI 在下游项目中改进了 marker 上方的框架内容（如优化了 Agent
 
 ```
 docs/
-├── index.md                   # 首页（Hero + Feature Cards）
+├── index.md                   # 首页（一句话说清 + 路径选择 + 特点展示）
 ├── .vitepress/config.ts       # VitePress 配置（导航、侧边栏、搜索）
 ├── .vitepress/utils/generate-ref.ts  # 参考页自动生成脚本
 ├── package.json               # VitePress 依赖
 │
-├── guide/                     # 入门指南（手动维护）
-│   ├── quick-start.md         #   ← 原 01-快速入门.md
-│   ├── concepts.md            #   ← 原 02-概念速查表.md
-│   ├── onboarding.md          #   ← 原 04-项目接入检查清单.md
-│   ├── faq.md                 #   ← 原 05-常见问题.md
-│   ├── troubleshooting.md     #   ← 原 06-故障排查指南.md
-│   └── exercises.md           #   ← 原 07-动手练习手册.md
+├── getting-started/           # 入门指南（按用户旅程组织：认知→体验→上手→精通）
+│   ├── what-is-sdd.md         #   认识 SDD（5 分钟，概念入门）
+│   ├── quick-start.md         #   快速入门（15 分钟，跑通 Q0）
+│   ├── tutorial.md            #   端到端教程（30 分钟，走完完整 Feature）
+│   ├── concepts.md            #   概念详解（工作流全貌、七角色、Spec、Marker）
+│   ├── glossary.md            #   术语速查表
+│   ├── philosophy.md          #   设计理念
+│   ├── tools.md               #   工具速查
+│   ├── exercises.md           #   动手练习（3 个递进式练习）
+│   ├── faq.md                 #   常见问题
+│   └── troubleshooting.md     #   故障排查
 │
-├── design/                    # 架构详述（手动维护，拆自原 03-框架设计文档.md）
+├── integration/               # 项目接入（按场景拆分）
+│   ├── new-project.md         #   新项目接入（含"新项目"定义）
+│   ├── existing-project.md    #   已有项目日常使用
+│   └── team-onboarding.md     #   团队接入指南
+│
+├── design/                    # 架构详述（手动维护）
 │   ├── overview.md            #   一、框架概述
 │   ├── architecture.md        #   二、架构设计
 │   ├── marker.md              #   三、Stub Marker
@@ -263,7 +322,7 @@ docs/
 | `tools/harvest.sh` 参数/行为变更 | `design/tools.md` §8.4 | 手动更新工具文档 |
 | `tools/VERSION` 版本格式变更 | `design/maintenance.md` §6.3 | 手动更新版本命名规则 |
 | `templates/` 模板变更 | `design/integration.md` | 手动更新接入指南 |
-| 新增/删除 Agent 角色 | `guide/concepts.md` + `design/overview.md` + `core/MANIFEST` | 手动更新七角色描述 + 更新 MANIFEST |
+| 新增/删除 Agent 角色 | `getting-started/concepts.md` + `design/overview.md` + `core/MANIFEST` | 手动更新七角色描述 + 更新 MANIFEST |
 | 新增/删除 Skill | `design/architecture.md` + `core/MANIFEST` | 更新被管理文件清单 + 更新 MANIFEST |
 | `core/MANIFEST` 变更 | `design/architecture.md` §2.2 | 手动更新被管理文件清单描述 |
 | 新增/删除 Skill | `design/architecture.md` §2.2 被管理文件清单 | 手动更新列表 |
@@ -300,6 +359,23 @@ cd docs && npm run docs:build
 cd docs && npm run docs:generate-ref && npm run docs:build
 ```
 
+> **注意**：修改 `theme/index.ts`、`theme/style.css` 或 `package.json` 新增依赖后，Vite HMR 无法自动生效，必须**重启 dev server**（Ctrl+C 后重新 `npm run docs:dev`）。
+
+### 文档部署
+
+`docs/deploy.sh` 负责同步文件到远程服务器并触发构建。修改 `docs/`、`core/`、`CHANGELOG.md` 后，**主动提醒用户是否需要部署**。
+
+```bash
+# 预览要同步的文件
+bash docs/deploy.sh
+
+# 同步 + 远程构建（需用户确认）
+bash docs/deploy.sh --confirm
+
+# 只触发远程构建，不同步文件
+bash docs/deploy.sh --build-only
+```
+
 ### config.ts 维护
 
 `docs/.vitepress/config.ts` 包含导航栏和侧边栏配置。当文档结构变更时（新增/删除/重命名页面），必须同步更新 config.ts 中的：
@@ -307,8 +383,8 @@ cd docs && npm run docs:generate-ref && npm run docs:build
 - **nav**：顶部导航链接
 - **sidebar**：侧边栏分组和链接（文件路径对应页面 URL）
 
-### GitHub Pages 部署
+### GitLab Pages 部署
 
-- 可通过 GitHub Actions 自动部署文档站
-- 构建输出：`public/`（或 `docs/.vitepress/dist/`）
-- `base` 路径：部署时需改为 `'/codeflow-framework/'`，本地预览用 `'/'`
+- CI 配置：`.gitlab-ci.yml`，仅 `develop` 分支触发
+- 构建输出：`public/`（GitLab Pages 要求）
+- `base` 路径：部署时需改为 `'/h-codeflow-framework/'`，本地预览用 `'/'`

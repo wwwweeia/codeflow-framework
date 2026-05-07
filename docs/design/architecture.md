@@ -13,16 +13,18 @@ next:
 
 ## 2.1 整体架构
 
+![架构总览](/assets/diagrams/architecture-v2.drawio.png)
+
 ```
-github.com/wwwweeia/
+gitlab.huaun.com/rd.huaun/
 │
-├── codeflow-framework/          ★ 框架项目（编排层源）
+├── h-codeflow-framework/          ★ 框架项目（编排层源）
 │   ├── core/                          通用编排文件
 │   ├── tools/                         升级脚本
 │   ├── templates/                     初始化模板
 │   └── docs/                          框架文档
 │
-├── your-project/                        ★ 业务项目 A
+├── ai-lingzhi/                        ★ 业务项目 A
 │   ├── CLAUDE.md                      项目协作指南
 │   ├── .claude/                       执行层（被管理 + 项目自定义）
 │   ├── <后端子项目>/
@@ -37,12 +39,12 @@ github.com/wwwweeia/
         └── .claude/
 ```
 
-**关键关系**：框架项目与业务项目是**同级目录**，通过相对路径引用脚本（`../codeflow-framework/tools/upgrade.sh`），零外部依赖。
+**关键关系**：框架项目与业务项目是**同级目录**，通过相对路径引用脚本（`../h-codeflow-framework/tools/upgrade.sh`），零外部依赖。
 
 ## 2.2 编排层目录结构
 
 ```
-codeflow-framework/
+h-codeflow-framework/
 ├── core/
 │   ├── agents/                     7 个 Agent 定义
 │   │   ├── pm-agent.md             产品经理：需求结构化 → Spec
@@ -64,24 +66,31 @@ codeflow-framework/
 │   │   └── upgrade-core.md         框架升级快捷命令
 │   │
 │   ├── rules/                      工作流规则
+│   │   ├── iron-rules.md           框架铁律（所有 Agent 共享的 6 条硬约束）
 │   │   ├── project_rule.md         全栈协作调度规则（Intake + 路由 + 验证）
 │   │   ├── merge_checklist.md      合并前检查清单（通用 + 后端 + 前端 + 全栈）
-│   │   └── framework_protection.md 框架保护规则（公司级 vs 项目级判断）
+│   │   ├── framework_protection.md 框架保护规则（公司级 vs 项目级判断）
+│   │   └── knowledge-protocol.md   知识加载协议
 │   │
-│   ├── skills/                     知识库与工具（20+ Skills）
+│   ├── skills/                     知识库与工具（24 Skills）
 │   │   ├── domain-ontology/        业务词典与领域建模骨架
 │   │   ├── sdd-riper-one-light/    Q0 轻量 Spec-Driven 协议
-│   │   ├── spec-templates/         Spec 文档模板
+│   │   ├── spec-templates/         Spec 文档模板（渐进式：SKILL.md + 4 个 references）
 │   │   ├── sql-checker/            SQL 审查规则
 │   │   ├── api-reviewer/           REST API 设计规范
-│   │   ├── backend-rules/          后端编码规范（含模板和 ORM 配置参考）
-│   │   ├── frontend-conventions/   前端编码规范
+│   │   ├── backend-rules/          后端编码规范（硬规则 + 知识索引）
+│   │   ├── frontend-conventions/   前端编码规范（渐进式：SKILL.md + 6 个 references）
 │   │   ├── frontend-arch-design/   前端架构设计
+│   │   ├── frontend-ui-design/     前端 UI 设计（渐进式：SKILL.md + 6 个 references）
 │   │   ├── frontend-create-component/  前端组件创建
 │   │   ├── frontend-create-module/     前端模块创建
 │   │   ├── frontend-prototype/     前端原型
 │   │   ├── frontend-api-integration/   前端 API 对接
 │   │   ├── e2e-testing/            E2E 测试（Playwright）
+│   │   ├── dev-workflow-common/    Dev/FE 共享工作流步骤
+│   │   ├── self-test-checklist/    Dev/FE 两阶段自查清单
+│   │   ├── part-e-templates/       Part E 测试场景模板
+│   │   ├── qa-review-framework/    QA 审查框架（四/五轴定义）
 │   │   ├── jira-task-management/   Jira 任务管理集成
 │   │   ├── confluence-doc-sync/    Confluence 文档同步
 │   │   ├── framework-feedback/     框架反馈提交（含 submit-feedback.sh）
@@ -125,11 +134,35 @@ codeflow-framework/
 │           └── project-memory/     协作记忆
 │
 ├── notify/
-│   └── notify-release.py           发版通知（构建卡片消息 + 发送）
+│   └── notify-release.py           飞书发版通知（构建卡片消息 + 发送）
 │
 └── docs/
     └── (文档站)
 ```
+
+### 三层知识架构
+
+框架内部采用三层分离的知识组织，控制每次任务的上下文占用：
+
+```
+┌─────────────────────────────────────────────┐
+│  铁律层 (iron-rules.md)                      │
+│  6 条不可违反的硬约束，所有 Agent 共享        │
+│  ~20 行 | 始终加载                           │
+├─────────────────────────────────────────────┤
+│  骨架层 (agents/*.md)                        │
+│  角色身份 + 特有红线 + 工作流骨架             │
+│  每 Agent 50-75 行 | 始终加载                │
+├─────────────────────────────────────────────┤
+│  知识层 (skills/*/)                          │
+│  公共工作流 + 自查清单 + 审查框架 + 领域知识   │
+│  按需加载 | 渐进式读取（SKILL.md + refs/）    │
+└─────────────────────────────────────────────┘
+```
+
+- **铁律层**：通过 `iron-rules.md` 集中管理，Agent 文件一行引用
+- **骨架层**：每个 Agent 仅保留角色身份和行为红线，公共步骤提取为 Skill
+- **知识层**：大型 Skill 采用渐进式结构（`SKILL.md` 核心索引 + `references/` 详细参考），按工作流类型选择性加载
 
 ## 2.3 执行层目录结构
 
@@ -159,26 +192,33 @@ codeflow-framework/
     │   └── upgrade-core.md
     │
     ├── rules/                         ← 部分被管理，部分项目自定义
+    │   ├── iron-rules.md              被管理（框架铁律，所有 Agent 共享）
     │   ├── project_rule.md            被管理（marker 下方可扩展项目规则）
     │   ├── merge_checklist.md         被管理
     │   ├── framework_protection.md    被管理
+    │   ├── knowledge-protocol.md      被管理
     │   ├── coding_backend.md          项目自定义（后端编码规范）
     │   └── coding_frontend.md         项目自定义（前端编码规范）
     │
     ├── skills/                        ← 部分被管理，部分项目自定义
     │   ├── domain-ontology/SKILL.md   被管理（骨架）+ 项目自定义（业务词典）
     │   ├── sdd-riper-one-light/       被管理
-    │   ├── spec-templates/            被管理
+    │   ├── spec-templates/            被管理（渐进式：SKILL.md + references/）
     │   ├── sql-checker/               被管理
     │   ├── api-reviewer/              被管理
     │   ├── backend-rules/             被管理
-    │   ├── frontend-conventions/      被管理
+    │   ├── frontend-conventions/      被管理（渐进式：SKILL.md + references/）
     │   ├── frontend-arch-design/      被管理
+    │   ├── frontend-ui-design/        被管理（渐进式：SKILL.md + references/）
     │   ├── frontend-create-component/ 被管理
     │   ├── frontend-create-module/    被管理
     │   ├── frontend-prototype/        被管理
     │   ├── frontend-api-integration/  被管理
     │   ├── e2e-testing/               被管理
+    │   ├── dev-workflow-common/       被管理（Dev/FE 共享工作流）
+    │   ├── self-test-checklist/       被管理（Dev/FE 两阶段自查）
+    │   ├── part-e-templates/          被管理（Part E 测试场景模板）
+    │   ├── qa-review-framework/       被管理（QA 审查框架）
     │   ├── jira-task-management/      被管理
     │   ├── confluence-doc-sync/       被管理
     │   ├── framework-feedback/        被管理（含 submit-feedback.sh）
@@ -287,24 +327,30 @@ codeflow-framework/
 | `.claude/commands/push-all.md` | `core/commands/` | 暂存+提交+推送 |
 | `.claude/commands/spec-status.md` | `core/commands/` | Spec 状态查看 |
 | `.claude/commands/upgrade-core.md` | `core/commands/` | 框架升级快捷命令 |
-| **Rules（3）** | | |
+| **Rules（4）** | | |
+| `.claude/rules/iron-rules.md` | `core/rules/` | 框架铁律（所有 Agent 共享） |
 | `.claude/rules/project_rule.md` | `core/rules/` | 工作流调度规则 |
 | `.claude/rules/merge_checklist.md` | `core/rules/` | 合并检查清单 |
 | `.claude/rules/framework_protection.md` | `core/rules/` | 框架保护规则 |
-| **Skills（20+）** | | |
+| **Skills（24）** | | |
 | `.claude/skills/domain-ontology/SKILL.md` | `core/skills/` | 业务词典骨架 |
 | `.claude/skills/sdd-riper-one-light/SKILL.md` | `core/skills/` | 轻量流程协议 |
-| `.claude/skills/spec-templates/SKILL.md` | `core/skills/` | Spec 文档模板 |
+| `.claude/skills/spec-templates/SKILL.md` | `core/skills/` | Spec 文档模板（渐进式） |
 | `.claude/skills/sql-checker/SKILL.md` | `core/skills/` | SQL 审查规则 |
 | `.claude/skills/api-reviewer/SKILL.md` | `core/skills/` | API 设计规范 |
 | `.claude/skills/backend-rules/SKILL.md` | `core/skills/` | 后端编码规范 |
-| `.claude/skills/frontend-conventions/SKILL.md` | `core/skills/` | 前端编码规范 |
+| `.claude/skills/frontend-conventions/SKILL.md` | `core/skills/` | 前端编码规范（渐进式） |
 | `.claude/skills/frontend-arch-design/SKILL.md` | `core/skills/` | 前端架构设计 |
+| `.claude/skills/frontend-ui-design/SKILL.md` | `core/skills/` | 前端 UI 设计（渐进式） |
 | `.claude/skills/frontend-create-component/SKILL.md` | `core/skills/` | 前端组件创建 |
 | `.claude/skills/frontend-create-module/SKILL.md` | `core/skills/` | 前端模块创建 |
 | `.claude/skills/frontend-prototype/SKILL.md` | `core/skills/` | 前端原型 |
 | `.claude/skills/frontend-api-integration/SKILL.md` | `core/skills/` | 前端 API 对接 |
 | `.claude/skills/e2e-testing/SKILL.md` | `core/skills/` | E2E 测试 |
+| `.claude/skills/dev-workflow-common/SKILL.md` | `core/skills/` | Dev/FE 共享工作流 |
+| `.claude/skills/self-test-checklist/SKILL.md` | `core/skills/` | Dev/FE 两阶段自查 |
+| `.claude/skills/part-e-templates/SKILL.md` | `core/skills/` | Part E 测试场景模板 |
+| `.claude/skills/qa-review-framework/SKILL.md` | `core/skills/` | QA 审查框架 |
 | `.claude/skills/jira-task-management/SKILL.md` | `core/skills/` | Jira 任务管理 |
 | `.claude/skills/confluence-doc-sync/SKILL.md` | `core/skills/` | Confluence 文档同步 |
 | `.claude/skills/framework-feedback/SKILL.md` | `core/skills/` | 框架反馈提交 |

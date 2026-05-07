@@ -21,7 +21,7 @@ next: false
 
 ---
 
-## [v2 重构实战：跨语言全栈迁移](/cases/v2-refactor)
+## [灵智 AI v2 重构实战：跨语言全栈迁移](/cases/v2-refactor)
 
 Java 老手、Python 新手，用 AI 协作在 1 天内完成 Java→Python / Vue 2→Vue 3 的全栈重构。14 条编码规则让 AI 从"不可控"变成"可控"。
 

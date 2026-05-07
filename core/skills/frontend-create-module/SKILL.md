@@ -106,5 +106,7 @@ export default {
 - [ ] 列表页使用封装表格 + `tableConfig.uri` 模式
 - [ ] 接口失败未在业务层弹 `Message.error`
 - [ ] 样式加了 `scoped`
+- [ ] 组件选型已按 `frontend-ui-design` §2 三层决策树判定（vul-ui → Element UI → 自封装）
+- [ ] 自检清单（`frontend-ui-design` §10）已通过
 
-<!-- codeflow-framework:core v1.5.0-20260417 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

@@ -1,12 +1,12 @@
 # 子模块知识体系增强方法论
 
-> 版本：v1.0 | 日期：2026-04-23 | Author: your-name + Claude Code
+> 版本：v1.0 | 日期：2026-04-23 | 作者：wqw + Claude Code
 
 ## 一、问题：框架有了，模块该填什么？
 
 ### 1.1 现象
 
-在 AI 辅助开发实践中，我们建立了公司级的协作框架（codeflow-framework），统一了：
+在 AI 辅助开发实践中，我们建立了公司级的协作框架（h-codeflow-framework），统一了：
 - **流程编排**：Intake 三问 → 智能路由 → PM/Arch/Dev/FE/QA 六角色工作流
 - **通用规范**：编码硬规则、命名规范、Git 规范
 - **Agent 定义**：7 个专业 Agent 的行为边界和技能加载

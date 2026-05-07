@@ -37,7 +37,7 @@ next:
 
 ```bash
 cd my-project
-sh ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 ```
 
 > `upgrade.sh` 执行时会自动 `git pull` 框架仓库最新代码，无需手动拉取。合并原理详见 [三、Stub Marker](/design/marker)，完整参数说明详见 [八、核心工具参考](/design/tools)。
@@ -46,7 +46,7 @@ sh ../codeflow-framework/tools/upgrade.sh
 
 ```bash
 # 执行升级
-sh ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 检查变更内容
 git diff .claude/
@@ -88,6 +88,18 @@ MAJOR.MINOR.PATCH-dev.N-YYYYMMDD    ← 实验版本（dev 版本）
 | 日期 | 发布日期 |
 | dev.N | 实验迭代序号，正式发版前必须去掉（`release.sh` 会拦截） |
 
+### VERSION 更新时机
+
+- **开发期间**：VERSION 保持最后已发布版本号，不随代码变更更新
+- **发版时**：`/release-core` 命令统一更新 VERSION 为新版本号
+- **试验场推送**：临时设 dev 版本，验证完毕后恢复
+
+### CHANGELOG 生成时机
+
+- **开发期间**：不修改 CHANGELOG.md
+- **发版时**：`/release-core` 通过 `git log <TAG>..HEAD` 找到所有未发布 commit，归纳为面向用户的 CHANGELOG 条目
+- CHANGELOG 面向框架使用者（下游项目开发者），不堆叠 commit 信息，而是重写为用户视角
+
 ## 6.4 试验场工作流（双向同步）
 
 框架是元框架，没有执行环境——改动无法在框架仓库内验证。实际做法是在真实下游项目中实验，验证通过后再反向沉淀回框架。
@@ -96,7 +108,7 @@ MAJOR.MINOR.PATCH-dev.N-YYYYMMDD    ← 实验版本（dev 版本）
 
 ```
 ┌─────────────────────┐                    ┌─────────────────────┐
-│  codeflow-framework│                    │     下游项目         │
+│  h-codeflow-framework│                    │     下游项目         │
 │      (编排层)        │                    │     (试验场)        │
 │   core/             │  ── upgrade.sh ──→ │   .claude/          │
 │   (框架源)           │    framework→下游   │   (marker上方被替换) │
@@ -129,5 +141,5 @@ Step 5: [框架] 去掉 -dev，更新 CHANGELOG，release.sh --confirm
 ## 6.5 常见问题
 
 常见问题和故障排查已独立维护，参见：
-- **[常见问题](/guide/faq)**：10 个高频问题（初始化/升级/工作流/环境）
-- **[故障排查指南](/guide/troubleshooting)**：四大问题域的排查步骤和解决方案
+- **[常见问题](/getting-started/faq)**：高频问题（基础概念/初始化/升级/工作流/环境）
+- **[故障排查](/getting-started/troubleshooting)**：五大问题域的排查步骤和解决方案

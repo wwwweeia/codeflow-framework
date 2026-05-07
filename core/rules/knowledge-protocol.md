@@ -30,7 +30,7 @@
 ### 不应放入知识体系的内容
 
 - 纯代码导航（放 Codemap：`.claude/codemap/domains/`）
-- 一次性临时信息（放 Spec 目录：`.claude/specs/feature-<name>/`）
+- 一次性临时信息（放 Spec 目录：`.claude/specs/YYYY-MM-DD_hh-mm_<feature-name>/`）
 - 框架已管理的通用规则（放 `core/rules/`，通过 upgrade.sh 同步）
 
 ---
@@ -113,4 +113,4 @@ rules（硬约束，自动加载） > cookbook（实操指南，按需加载） 
 - **来源可追溯**：每条知识关联到产出它的 Spec 或代码审查发现
 - **通用性检验**：沉淀前判断"换一个项目，这条知识还有用吗？"——有用考虑提升到框架 Skill
 
-<!-- codeflow-framework:core v2.1.0-20260423 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

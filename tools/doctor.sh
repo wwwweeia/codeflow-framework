@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# doctor.sh — codeflow-framework 环境诊断工具
+# doctor.sh — h-codeflow-framework 环境诊断工具
 #
 # 用法：
 #   bash tools/doctor.sh           # 完整检查
@@ -382,7 +382,7 @@ check_e2e_environment() {
         FAIL_COUNT=$((FAIL_COUNT + 1))
         FAIL_SUMMARIES+=("e2e/package.json 缺失 — E2E 未正确初始化")
         JSON_ITEMS+=("{\"name\":\"e2e_package_json\",\"status\":\"FAIL\",\"desc\":\"E2E 未正确初始化\"}")
-        say "  ${RED}✗${NC} e2e/package.json  缺失 — 请重新初始化：sh ../codeflow-framework/templates/e2e/init-e2e.sh . \"Project Name\""
+        say "  ${RED}✗${NC} e2e/package.json  缺失 — 请重新初始化：sh ../h-codeflow-framework/templates/e2e/init-e2e.sh . \"Project Name\""
     fi
 
     # 检查依赖是否已安装
@@ -415,6 +415,23 @@ check_e2e_environment() {
         JSON_ITEMS+=("{\"name\":\"e2e_playwright\",\"status\":\"WARN\",\"desc\":\"Playwright 未安装\"}")
         say "  ${YELLOW}⚠${NC} Playwright  未安装"
         say "         ${CYAN}→ cd e2e && npm install && npx playwright install chromium${NC}"
+    fi
+
+    # 检查 ddddocr（E2E 验证码 OCR 依赖）
+    local ddddocr_ok=""
+    ddddocr_ok=$(python3 -c "import ddddocr" 2>/dev/null && echo "ok") || true
+    if [ -n "$ddddocr_ok" ]; then
+        PASS_COUNT=$((PASS_COUNT + 1))
+        JSON_ITEMS+=("{\"name\":\"e2e_ddddocr\",\"status\":\"pass\"}")
+        if [ "$QUIET" = false ]; then
+            say "  ${GREEN}✓${NC} ddddocr   已安装（验证码 OCR）"
+        fi
+    else
+        WARN_COUNT=$((WARN_COUNT + 1))
+        WARN_SUMMARIES+=("ddddocr 未安装 — E2E 登录验证码识别不可用")
+        JSON_ITEMS+=("{\"name\":\"e2e_ddddocr\",\"status\":\"WARN\",\"desc\":\"E2E 登录验证码识别不可用\"}")
+        say "  ${YELLOW}⚠${NC} ddddocr   未安装 — E2E 登录验证码识别将失败"
+        say "         ${CYAN}→ pip install ddddocr${NC}"
     fi
 
     say ""
@@ -498,7 +515,7 @@ if [ "$JSON_OUTPUT" = true ]; then
 else
     # 交互模式：逐步输出
     say ""
-    say "${BOLD}codeflow-framework 环境诊断${NC}"
+    say "${BOLD}h-codeflow-framework 环境诊断${NC}"
     say ""
 
     check_framework_base

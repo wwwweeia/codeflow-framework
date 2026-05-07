@@ -13,6 +13,7 @@ frontend/.env.local
 
 # Claude Code
 .claude/.sync-state/
+.claude/.backup/
 .worktrees/
 
 # OS

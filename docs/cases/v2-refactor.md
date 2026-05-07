@@ -1,5 +1,5 @@
 ---
-title: v2 重构实战
+title: 灵智 AI v2 重构实战
 description: AI 驱动的跨语言全栈迁移 — Java 到 Python，1 天完成 15000 行代码
 prev:
   text: 工作流 C 完整旅程
@@ -18,7 +18,7 @@ next:
 
 ### 旧系统的痛点
 
-v1：**Java 8 / Spring Boot + 3 个 Vue 2 微前端（qiankun）**
+灵智 AI v1：**Java 8 / Spring Boot + 3 个 Vue 2 微前端（qiankun）**
 
 | 痛点 | 表现 |
 |------|------|

@@ -1,11 +1,91 @@
 ---
 title: 更新日志
-description: codeflow-framework 版本历史与更新日志
+description: h-codeflow-framework 版本历史与更新日志
 ---
 
 # 更新日志
 
-&gt; codeflow-framework 版本历史与更新日志
+&gt; h-codeflow-framework 版本历史与更新日志
+
+## [2.3.0-20260430] - 2026-04-30
+
+### 🟢 新增
+
+- **铁律文件（iron-rules）**：新增 6 条所有 Agent 共享的硬约束底线规则，明确不可违反的行为边界
+- **4 个公共 Skill**：新增可复用的知识库技能模块，Agent 按需挂载
+- **UI 设计规范 Skill**：集成下游验证过的 vul-ui 体系规范，FE/Prototype Agent 自动挂载
+- **push-all 命令增强**：提交后自动先 pull 再 push，减少远程冲突
+
+### 🔵 改进
+
+- **Agent 行为定义精简**：7 个 Agent 总行数从 1032 行压缩至 447 行，指令更聚焦、Token 消耗更低
+- **Skill 渐进式加载**：大型 Skill（如 frontend-ui-design）拆分为按需加载结构，减少单次上下文占用
+- **Intake 智能判断**：工作流触发规则从硬约束改为智能判断，减少误触发
+- **发版流程重构**：开发阶段不再需要碰版本号，发版时统一处理，降低日常开发心智负担
+
+### 🐛 修复
+
+- **#6** 修复 marker 版本号振荡与漏更新的问题
+- **#4** 修复 upgrade 脚本 glab 连接错误实例和非 .md 文件同步问题
+- **#3** 补充列表页组件树分层设计约束，禁止 list.vue 堆砌弹窗
+- 修复 upgrade/harvest 版本号死结问题
+- 修复 GFM 表格渲染缺失空行问题
+- 修复 fix-issue 流程与版本维护耦合的问题
+
+### 📋 升级须知
+
+- 无破坏性变更，直接执行 `bash ../h-codeflow-framework/tools/upgrade.sh` 即可
+- 新增的 `core/rules/iron-rules.md` 会自动同步到下游项目
+- Agent 精简后行为有调整，建议升级后观察首次任务执行效果
+
+---
+
+## [2.2.0-20260428] - 2026-04-28
+
+### 新增
+
+**init-setup 阶段化执行**
+- 初始化任务分 P1/P2/P3 三阶段执行，新增 `--phase` 参数控制阶段
+- 阶段进度概览，清晰展示每阶段的任务和完成状态
+- 初始化完成后引导开新会话，新增 T9 Codemap 扫描任务
+- T6 增强知识扫描 — 引导已有项目从代码中沉淀 cookbook
+
+**doctor 环境诊断增强**
+- E2E 诊断新增 ddddocr 依赖检查
+
+**Demo E2E 测试套件**
+- 新增首页 + Prompt 列表页 E2E 测试用例
+- 新增 E2E 测试模板 README（含认证机制、POM 模式说明）
+
+**文档站全面升级**
+- 文档站全站重构：guide/ 拆分为 getting-started/ + integration/，信息架构更清晰
+- 首页重新设计 — 品牌色体系 + Feature Cards + 框架定位对比
+- 新增图片点击放大预览功能（medium-zoom）
+- 新增 drawio 导出图片插入架构/协作/路由/标记机制对应页面
+- 新增 vitepress-docs 技能，write-doc 命令引用排版规范
+- 新增 GitHub spec-kit 全景解读文章、spec-coding 分享大纲
+- 新增「项目知识体系」概念解读（Codemap + Knowledge Protocol）
+- 新增浏览器自动化工具选型文章、测试金字塔实战案例
+- 新增「培养你的直觉」随笔、OpenCode CLI 迁移指南
+- README 嵌入 4 张架构图提升可读性
+
+### 优化
+
+**命令体系精简**
+- 合并 4 个 write-* 命令为统一 write-doc + 新增 gen-reference
+- 全局统一脚本调用 sh → bash
+
+**upgrade.sh 安全增强**
+- 检测框架根目录误执行：若 PROJECT_DIR 等于 FRAMEWORK_ROOT 或其子目录，直接报错退出
+- Demo Prompt 列表页标签选择器宽度适配
+
+### 修复
+
+- 优化初始化完成提示 + 文档站会话引导统一
+- 删除 .gitlab-ci.yml，修复 reference/commands.md 重复 frontmatter
+- 从 Git 追踪中移除 settings.local.json 并加入 gitignore
+
+---
 
 ## [2.1.0-20260423] - 2026-04-23
 
@@ -112,7 +192,7 @@ description: codeflow-framework 版本历史与更新日志
 - 文件变化时自动重新生成参考页，浏览器热更新
 
 **部署配置**
-- 新增 `.github/workflows/`：develop 分支自动构建并部署 GitHub Pages
+- 新增 `.gitlab-ci.yml`：develop 分支自动构建并部署 GitLab Pages
 - 新增 `deploy/` 目录：Docker 多阶段构建、docker-compose、Nginx 配置、SSL 证书脚本
 
 **Demo AI Prompt Lab**
@@ -168,8 +248,8 @@ description: codeflow-framework 版本历史与更新日志
 - 支持 4 种反馈类型：Bug、Feature Request、Improvement、Question
 - 自动收集项目名、框架版本等上下文信息，减少用户填写负担
 - 提交前展示预览，用户确认后才发送
-- 通过通知发送给框架维护团队
-- 修正仓库路径并优化通知卡片描述渲染
+- 通过飞书群通知发送给框架维护团队
+- 修正仓库路径并优化飞书卡片描述渲染
 
 **Using Git Worktrees 技能**
 - 新增 `using-git-worktrees` 技能（`core/skills/using-git-worktrees/`）：支持在隔离的 git worktree 中创建工作区
@@ -201,7 +281,7 @@ description: codeflow-framework 版本历史与更新日志
 - 引入测试计划闭环：Arch 产出 Part E（测试场景），Dev/FE 产出 04_test_plan.md，QA 审计 04
 
 **`/release-core` 发版命令**
-- 新增标准化发版 slash command，覆盖完整流程：版本号确认 → CHANGELOG 更新 → Git 提交 → 通知预览 → 正式发送
+- 新增标准化发版 slash command，覆盖完整流程：版本号确认 → CHANGELOG 更新 → Git 提交 → 飞书通知预览 → 正式发送
 
 ### 优化
 
@@ -276,7 +356,7 @@ description: codeflow-framework 版本历史与更新日志
 - pm-agent：只产出 01_requirement.md，前端模式新增 §1-§7 字段级精度结构
 - qa-agent：审查标准改为对标 01 + 02_technical_design.md，新增审查文件依赖清单
 
-**知识文档细化（来自 your-project 试验场验证）**
+**知识文档细化（来自 ai-lingzhi 试验场验证）**
 - `codemap-vs-specs.md`：`03_implementation.md` 拆分为 `03_impl_backend.md` + `03_impl_frontend.md`（BE/FE 分开产出），"四轴"→"五轴验收"，新增 spec-template.md 引用
 - `HOWTO-generate-codemap.md`：3.2/3.4 小节补充经验提示，3.4 增加 `convertToVO` / `buildVO` 作为 VO 组装方法的参考
 
@@ -298,23 +378,23 @@ description: codeflow-framework 版本历史与更新日志
 ### 变更（Breaking Change）
 
 **仓库迁移与重命名**
-- 仓库名称：`codeflow-framework` → `codeflow-framework`
-- 仓库地址：`github.com/wwwweeia/ai.kg/ai/codeflow-framework` → `github.com/wwwweeia/codeflow-framework`
-- 所有 Stub Marker 关键词同步更新：`codeflow-framework:core` → `codeflow-framework:core`
+- 仓库名称：`huaun-codeflow-framework` → `h-codeflow-framework`
+- 仓库地址：`gitlab.huaun.com/rd.huaun/ai.kg/ai/huaun-codeflow-framework` → `gitlab.huaun.com/rd.huaun/h-codeflow-framework`
+- 所有 Stub Marker 关键词同步更新：`huaun-codeflow-framework:core` → `h-codeflow-framework:core`
 - 所有脚本、文档、模板中的路径引用同步更新
 
 ### 下游项目升级指南
 
 &gt; ⚠️ **本次为不兼容变更**，下游项目需手动执行以下步骤：
 
-1. 克隆新仓库到与项目同级目录：`git clone git@github.com:wwwweeia/codeflow-framework.git`
+1. 克隆新仓库到与项目同级目录：`git clone git@gitlab.huaun.com:rd.huaun/h-codeflow-framework.git`
 2. 将项目 `.claude/` 下所有 `.md` 文件中的 marker 关键词替换：
    ```bash
-   find .claude -name "*.md" -exec sed -i '' 's/codeflow-framework/codeflow-framework/g' {} +
+   find .claude -name "*.md" -exec sed -i '' 's/huaun-codeflow-framework/h-codeflow-framework/g' {} +
    ```
 3. 更新项目 `CLAUDE.md` 中对框架目录的引用路径
-4. 执行升级：`sh ../codeflow-framework/tools/upgrade.sh`
-5. 提交变更：`git commit -am "chore: migrate to codeflow-framework v1.5.0"`
+4. 执行升级：`bash ../h-codeflow-framework/tools/upgrade.sh`
+5. 提交变更：`git commit -am "chore: migrate to h-codeflow-framework v1.5.0"`
 
 ---
 
@@ -353,7 +433,7 @@ description: codeflow-framework 版本历史与更新日志
 
 ### 新增
 
-**前端开发 Skill 三件套**（从 your-project 项目验证后上提）
+**前端开发 Skill 三件套**（从 ai-lingzhi 项目验证后上提）
 - `core/skills/frontend-api-integration/SKILL.md` — Vuex Store Action + axios 接口对接规范
 - `core/skills/frontend-create-component/SKILL.md` — Vue 2 组件创建模板与命名/样式/通信规则
 - `core/skills/frontend-create-module/SKILL.md` — 业务模块脚手架（路由 + Store + 列表页标准套件）
@@ -431,8 +511,8 @@ description: codeflow-framework 版本历史与更新日志
   - 自动校验 VERSION 与 CHANGELOG 一致性
   - 校验 git 工作区干净、tag 不重复
   - 支持 dry-run 预览和 `--confirm` 正式发版
-  - 自动 git tag + push + 可选通知
-- `notify/notify-release.py` — 发版通知脚本
+  - 自动 git tag + push + 飞书群通知
+- `notify/notify-release.py` — 飞书发版通知脚本
   - 构建互动卡片消息（版本号、更新内容、升级命令）
   - 支持命令行参数和 stdin JSON 两种调用方式
 
@@ -497,8 +577,8 @@ description: codeflow-framework 版本历史与更新日志
 
 ### 🏗️ 架构特性
 
-- **两层分离**：编排层（codeflow-framework/core/）+ 执行层（各项目/.claude/）
-- **Stub Marker 管理**：通过 marker（`&lt;!-- codeflow-framework:core vX.X.X — ... --&gt;`）实现自动管理与保留项目自定义
+- **两层分离**：编排层（h-codeflow-framework/core/）+ 执行层（各项目/.claude/）
+- **Stub Marker 管理**：通过 marker（`&lt;!-- h-codeflow-framework:core vX.X.X — ... --&gt;`）实现自动管理与保留项目自定义
 - **五角色工作流**：PM → Architect → Dev/FE → QA ← 主会话（调度）
 - **多工作流支持**：Q0 轻量、A 纯后端、B 纯前端、C 全栈联动
 - **无依赖分布**：框架作为同级项目，通过相对路径脚本实现零依赖集成
@@ -521,7 +601,7 @@ description: codeflow-framework 版本历史与更新日志
 
 ## 未来计划
 
-- [ ] **Phase 2**：your-project 项目集成与验证
+- [ ] **Phase 2**：ai-lingzhi 项目集成与验证
 - [ ] **Phase 3**：框架文档补充与 example 编写
 - [ ] **Phase 4**：脚本测试与容错能力增强
 - [ ] **Phase 5**：团队培训与推广
@@ -553,7 +633,7 @@ description: codeflow-framework 版本历史与更新日志
 ---
 
 **当前版本**：1.6.0-20260417
-**Maintainer**: your-name
+**维护者**：wqw
 **更新日期**：2026-04-17
 
 

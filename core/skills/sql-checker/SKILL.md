@@ -48,4 +48,4 @@ description: SQL 审查规则与最佳实践。用于后端开发中的数据库
 - [ ] **事务处理**：多表操作是否在同一事务内？
 - [ ] **错误处理**：是否妥善捕获和处理数据库异常？
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->

@@ -2,17 +2,17 @@
 # upgrade.sh — 升级项目中的框架托管文件
 #
 # 用法（在项目目录执行）：
-#   cd your-project
-#   bash ../codeflow-framework/tools/upgrade.sh
-#   bash ../codeflow-framework/tools/upgrade.sh --dry-run        # 预览变化，不写入
-#   bash ../codeflow-framework/tools/upgrade.sh --dry-run --diff # 预览并显示详细 diff
-#   bash ../codeflow-framework/tools/upgrade.sh --force          # 跳过冲突检测，强制覆盖
-#   bash ../codeflow-framework/tools/upgrade.sh --conflict=preserve # 跳过有冲突的文件
-#   bash ../codeflow-framework/tools/upgrade.sh --conflict=fail  # 有冲突时退出（CI 用）
+#   cd ai-lingzhi
+#   bash ../h-codeflow-framework/tools/upgrade.sh
+#   bash ../h-codeflow-framework/tools/upgrade.sh --dry-run        # 预览变化，不写入
+#   bash ../h-codeflow-framework/tools/upgrade.sh --dry-run --diff # 预览并显示详细 diff
+#   bash ../h-codeflow-framework/tools/upgrade.sh --force          # 跳过冲突检测，强制覆盖
+#   bash ../h-codeflow-framework/tools/upgrade.sh --conflict=preserve # 跳过有冲突的文件
+#   bash ../h-codeflow-framework/tools/upgrade.sh --conflict=fail  # 有冲突时退出（CI 用）
 #
 # 功能：
-# 1. 自动查找本项目 .claude/ 下所有包含 "codeflow-framework:core" marker 的文件
-# 2. 从 ../codeflow-framework/core/ 复制对应的源文件
+# 1. 自动查找本项目 .claude/ 下所有包含 "h-codeflow-framework:core" marker 的文件
+# 2. 从 ../h-codeflow-framework/core/ 复制对应的源文件
 # 3. 保留 marker 下方的用户自定义内容
 # 4. 检测下游 marker 上方的本地修改，防止静默覆盖
 # 5. 备份原文件（如变更）
@@ -126,7 +126,7 @@ cd "$CURRENT_DIR"
 header "扫描需要更新的文件"
 
 MANAGED_FILES_TEMP=$(mktemp)
-grep -r "codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" 2>/dev/null | cut -d: -f1 | sort -u > "$MANAGED_FILES_TEMP" || true
+grep -r "<!-- h-codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" --include="*.sh" --include="*.yaml" --include="*.yml" 2>/dev/null | cut -d: -f1 | sort -u > "$MANAGED_FILES_TEMP" || true
 
 MANAGED_COUNT=$(wc -l < "$MANAGED_FILES_TEMP" | tr -d ' ')
 
@@ -162,7 +162,7 @@ while IFS= read -r TARGET_FILE; do
     fi
 
     # 查找 marker 行号
-    MARKER_LINE=$(grep -n "codeflow-framework:core" "$TARGET_FILE" | head -1 | cut -d: -f1)
+    MARKER_LINE=$(grep -n "<!-- h-codeflow-framework:core" "$TARGET_FILE" | head -1 | cut -d: -f1)
 
     if [[ -z "$MARKER_LINE" ]]; then
         warn "未找到 marker，跳过：$RELATIVE_PATH"
@@ -170,7 +170,7 @@ while IFS= read -r TARGET_FILE; do
     fi
 
     # 提取源文件的 marker 前内容
-    SOURCE_MARKER_LINE=$(grep -n "codeflow-framework:core" "$SOURCE_FILE" | head -1 | cut -d: -f1)
+    SOURCE_MARKER_LINE=$(grep -n "<!-- h-codeflow-framework:core" "$SOURCE_FILE" | head -1 | cut -d: -f1)
 
     if [[ -z "$SOURCE_MARKER_LINE" ]]; then
         error "源文件缺少 marker，跳过：$SOURCE_FILE"
@@ -211,6 +211,11 @@ while IFS= read -r TARGET_FILE; do
     # 提取源文件的 marker 前内容（包括 marker）
     SOURCE_CONTENT=$(head -n "$SOURCE_MARKER_LINE" "$SOURCE_FILE")
 
+    # 注入当前框架版本号到 marker（防止 core/ 源文件版本滞后导致振荡）
+    if [[ -n "${FRAMEWORK_VERSION:-}" ]]; then
+        SOURCE_CONTENT=$(echo "$SOURCE_CONTENT" | sed "s/h-codeflow-framework:core v[^ ]*/h-codeflow-framework:core v${FRAMEWORK_VERSION}/")
+    fi
+
     # 生成合并后的新内容
     NEW_CONTENT=$(
         echo "$SOURCE_CONTENT"
@@ -223,7 +228,8 @@ while IFS= read -r TARGET_FILE; do
     CURRENT_CONTENT=$(cat "$TARGET_FILE")
     if [[ "$NEW_CONTENT" = "$CURRENT_CONTENT" ]]; then
         SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
-        # 即使无变化，也记录 hash（用于下次冲突检测）
+
+        # 记录 hash（用于下次冲突检测）
         SKIP_ABOVE_HASH=$(compute_file_hash "$TARGET_FILE" "$MARKER_LINE")
         batch_write_add "$RELATIVE_PATH" "$SKIP_ABOVE_HASH" "${FRAMEWORK_VERSION:-unknown}"
         continue
@@ -315,6 +321,32 @@ if [[ -f "$FRAMEWORK_CORE/MANIFEST" ]]; then
                     success "新增 skill：$manifest_entry"
                 fi
                 NEW_COUNT=$((NEW_COUNT + 1))
+            else
+                # skill 目录已存在：同步 core 中有 marker 但下游缺失/未纳管的文件
+                while IFS= read -r -d '' CORE_FILE; do
+                    REL="${CORE_FILE#$FRAMEWORK_CORE/}"
+                    DST="$PROJECT_CLAUDE/$REL"
+                    if [[ ! -f "$DST" ]] && grep -q "<!-- h-codeflow-framework:core" "$CORE_FILE" 2>/dev/null; then
+                        # 下游不存在且 core 有 marker → 新增
+                        if $DRY_RUN; then
+                            printf "${YELLOW}[NEW]${NC}    新增文件（未写入）：$REL\n"
+                        else
+                            mkdir -p "$(dirname "$DST")"
+                            cp "$CORE_FILE" "$DST"
+                            success "新增文件：$REL"
+                        fi
+                        NEW_COUNT=$((NEW_COUNT + 1))
+                    elif ! grep -q "<!-- h-codeflow-framework:core" "$DST" 2>/dev/null && grep -q "<!-- h-codeflow-framework:core" "$CORE_FILE" 2>/dev/null; then
+                        # 下游无 marker 但 core 有 marker → 用 core 版本覆盖（纳入框架管理）
+                        if $DRY_RUN; then
+                            printf "${YELLOW}[SYNC]${NC}   纳管文件（未写入）：$REL\n"
+                        else
+                            cp "$CORE_FILE" "$DST"
+                            success "纳管文件：$REL"
+                        fi
+                        NEW_COUNT=$((NEW_COUNT + 1))
+                    fi
+                done < <(find "$FRAMEWORK_CORE/$manifest_entry" -type f -print0)
             fi
         elif [[ -f "$FRAMEWORK_CORE/$manifest_entry" ]]; then
             # 单文件：检查文件是否存在
@@ -359,7 +391,7 @@ if [[ -f "$FRAMEWORK_CORE/MANIFEST" ]]; then
             ORPHAN_COUNT=$((ORPHAN_COUNT + 1))
             ORPHAN_FILES="${ORPHAN_FILES}  - ${RELATIVE_PATH}\n"
         fi
-    done < <(grep -rl "codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" 2>/dev/null | sort -u)
+    done < <(grep -rl "<!-- h-codeflow-framework:core" "$PROJECT_CLAUDE" --include="*.md" --include="*.sh" --include="*.yaml" --include="*.yml" 2>/dev/null | sort -u)
 fi
 
 if [[ "$ORPHAN_COUNT" -gt 0 ]]; then

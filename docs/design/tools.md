@@ -17,7 +17,7 @@ next:
 
 **语法**：
 ```bash
-sh ../codeflow-framework/templates/init-project.sh <项目目录> "<项目名称>"
+bash ../h-codeflow-framework/templates/init-project.sh <项目目录> "<项目名称>"
 ```
 
 **参数**：
@@ -44,7 +44,7 @@ sh ../codeflow-framework/templates/init-project.sh <项目目录> "<项目名称
 
 **语法**：
 ```bash
-sh ../codeflow-framework/templates/init-subproject.sh <子项目路径> <fe|be> [项目名]
+bash ../h-codeflow-framework/templates/init-subproject.sh <子项目路径> <fe|be> [项目名]
 ```
 
 **参数**：
@@ -60,10 +60,10 @@ sh ../codeflow-framework/templates/init-subproject.sh <子项目路径> <fe|be> 
 **使用示例**：
 ```bash
 # 手动初始化前端子项目
-sh ../codeflow-framework/templates/init-subproject.sh ./my-frontend fe "My Project"
+bash ../h-codeflow-framework/templates/init-subproject.sh ./my-frontend fe "My Project"
 
 # 手动初始化后端子项目
-sh ../codeflow-framework/templates/init-subproject.sh ./my-backend be "My Project"
+bash ../h-codeflow-framework/templates/init-subproject.sh ./my-backend be "My Project"
 ```
 
 ## 8.3 upgrade.sh
@@ -73,10 +73,10 @@ sh ../codeflow-framework/templates/init-subproject.sh ./my-backend be "My Projec
 **语法**：
 ```bash
 cd <项目目录>
-sh ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 指定框架分支（用于试验场模式）
-FRAMEWORK_BRANCH=exp/xxx sh ../codeflow-framework/tools/upgrade.sh
+FRAMEWORK_BRANCH=exp/xxx bash ../h-codeflow-framework/tools/upgrade.sh
 ```
 
 **前提条件**：
@@ -107,15 +107,15 @@ FRAMEWORK_BRANCH=exp/xxx sh ../codeflow-framework/tools/upgrade.sh
 
 **语法**：
 ```bash
-cd codeflow-framework
-sh tools/harvest.sh [--apply] [--include-new] <下游项目目录>
+cd h-codeflow-framework
+bash tools/harvest.sh [--apply] [--include-new] <下游项目目录>
 ```
 
 **参数**：
 
 | 参数 | 必填 | 说明 |
 |------|------|------|
-| 下游项目目录 | 是 | 目标下游项目的根目录，如 `../your-project` |
+| 下游项目目录 | 是 | 目标下游项目的根目录，如 `../ai-lingzhi` |
 | `--apply` | 否 | 实际写入 core/（默认 dry-run 只看 diff） |
 | `--include-new` | 否 | 处理下游新增的、core/ 中不存在的文件 |
 
@@ -124,24 +124,24 @@ sh tools/harvest.sh [--apply] [--include-new] <下游项目目录>
 **使用示例**：
 ```bash
 # 预览差异
-sh tools/harvest.sh ../your-project
+bash tools/harvest.sh ../ai-lingzhi
 
 # 实际写入（写入前自动备份到 core/.backup/）
-sh tools/harvest.sh --apply ../your-project
+bash tools/harvest.sh --apply ../ai-lingzhi
 
 # 含新增文件
-sh tools/harvest.sh --apply --include-new ../your-project
+bash tools/harvest.sh --apply --include-new ../ai-lingzhi
 ```
 
 ## 8.5 release.sh
 
-**用途**：框架发版通知，校验版本号与 CHANGELOG 一致性，发送通知。
+**用途**：框架发版通知，校验版本号与 CHANGELOG 一致性，发送飞书群通知。
 
 **语法**：
 ```bash
-cd codeflow-framework
-sh tools/release.sh            # 预览模式（dry-run）
-sh tools/release.sh --confirm  # 正式发送Webhook 通知
+cd h-codeflow-framework
+bash tools/release.sh            # 预览模式（dry-run）
+bash tools/release.sh --confirm  # 正式发送飞书通知
 ```
 
 **校验项**：
@@ -170,7 +170,7 @@ bash tools/doctor.sh
 
 # 在项目目录 — 检查基础设施 + 项目构建工具 + 可选集成
 cd project
-bash ../codeflow-framework/tools/doctor.sh
+bash ../h-codeflow-framework/tools/doctor.sh
 
 # 只显示有问题的项
 bash tools/doctor.sh --quiet

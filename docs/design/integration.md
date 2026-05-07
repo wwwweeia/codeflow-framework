@@ -19,7 +19,7 @@ next:
 
 ```
 ai/                              ← 同级目录
-├── codeflow-framework/    ← 框架（已 clone）
+├── h-codeflow-framework/    ← 框架（已 clone）
 └── my-new-project/              ← 业务项目
 ```
 
@@ -27,7 +27,7 @@ ai/                              ← 同级目录
 
 ```bash
 cd my-new-project
-sh ../codeflow-framework/templates/init-project.sh . "My Project"
+bash ../h-codeflow-framework/templates/init-project.sh . "My Project"
 ```
 
 脚本自动完成：
@@ -78,24 +78,25 @@ sh ../codeflow-framework/templates/init-project.sh . "My Project"
 | 任务 | AI 自动做 | 需用户提供 |
 |------|----------|-----------|
 | T1 填充 CLAUDE.md | 扫描技术栈和目录结构，生成草稿 | 项目定位、团队信息、部署环境 |
-| T2 填充业务词典 | 扫描 Entity/Model/API 提取术语 | 中文名、业务规则 |
-| T3 配置 MCP | 检查文件状态 | Jira/Confluence 凭据 |
+| T2 执行 upgrade.sh | 检查框架版本 | 确认执行 |
+| T3 填充业务词典 | 扫描 Entity/Model/API 提取术语 | 中文名、业务规则 |
 | T4 自定义编码规范 | 采样代码检测风格 | 确认或补充约定 |
-| T5 执行 upgrade.sh | 检查框架版本 | 确认执行 |
-| T6 完善子项目上下文 | 扫描路由/组件/API | 确认结果 |
+| T5 生成 Domain Codemap | 扫描业务模块结构 | 确认或选择模块 |
+| T6 配置 MCP | 检查文件状态 | Jira/Confluence 凭据 |
+| T7 完善子项目上下文 | 扫描路由/组件/API | 确认结果 |
 
-**详细的任务验证标准，参见 [项目接入检查清单](/guide/onboarding)。**
+**详细的任务验证标准，参见 [新项目接入](/integration/new-project)。**
 
 手动添加新子项目（初始化时未检测到的）：
 
 ```bash
-sh ../codeflow-framework/templates/init-subproject.sh ./new-frontend-app fe "My Project"
-sh ../codeflow-framework/templates/init-subproject.sh ./new-backend-service be "My Project"
+bash ../h-codeflow-framework/templates/init-subproject.sh ./new-frontend-app fe "My Project"
+bash ../h-codeflow-framework/templates/init-subproject.sh ./new-backend-service be "My Project"
 ```
 
 ## 5.4 接入验证清单
 
-初始化并配置完成后的验证步骤，详见 [项目接入检查清单](/guide/onboarding) Phase 3。
+初始化并配置完成后的验证步骤，详见 [新项目接入](/integration/new-project) Phase 3。
 
 ## 5.5 完整操作示例
 
@@ -104,11 +105,11 @@ sh ../codeflow-framework/templates/init-subproject.sh ./new-backend-service be "
 cd my-new-project && git init
 
 # 2. 一键初始化（自动检测并初始化子项目）
-sh ../codeflow-framework/templates/init-project.sh . "My New Project"
+bash ../h-codeflow-framework/templates/init-project.sh . "My New Project"
 
 # 3. 验证结构 + 升级脚本可用
 ls -la .claude/{agents,rules,skills,context,specs,codemap,project-memory}
-sh ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 
 # 4. 编辑项目配置（CLAUDE.md、业务词典、编码规范...）
 # 5. 提交

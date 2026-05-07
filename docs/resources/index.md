@@ -26,7 +26,9 @@ next: false
 ## 方法论
 
 - **[阿里云 SDD-RIPER 方法论](/resources/sdd-riper-methodology)** — AI 原生研发范式：从"代码中心"到"文档驱动"的演进
+- **[GitHub spec-kit：开源 SDD 工具包全景解读](/resources/github-spec-kit)** — 深度解析 GitHub 官方开源 SDD 工具包，与 HCodeFlow 的异同对比
 - **[培养你的直觉](/resources/building-intuition)** — 使用 Claude Code 过程中的直觉培养：什么时候该具体，什么时候该开放
+- **[Superpowers 深度解读](/resources/superpowers-deep-dive)** — AI 编程代理的工程化方法论：Skill 系统、TDD 纪律与子代理协作
 - **[Claude Code 优质仓库推荐](/resources/claude-code-awesome-repos)** — 社区高度认可的 Claude Code 相关仓库推荐
 
 ## 飞书工具集成
@@ -41,9 +43,3 @@ next: false
 基础设施与 DevOps 实践。
 
 - **[CI/CD 自动化部署](/resources/watchtower-cicd-guide)** — 基于 Watchtower + Docker 的自动化部署方案，支持飞书群通知
-
-## 竞品对比分析
-
-与同类 AI 开发框架/工具的客观对比，帮助理解 CodeFlow 的定位和选型。
-
-- **[vs Superpowers](/resources/vs-superpowers)** — 定位差异、核心壁垒与互补关系分析

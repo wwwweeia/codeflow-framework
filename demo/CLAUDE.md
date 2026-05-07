@@ -15,7 +15,7 @@
 
 ## 核心协作规则
 
-> 遵循 codeflow-framework 定义的全栈协作规则。
+> 遵循 h-codeflow-framework 定义的全栈协作规则。
 
 ### 三铁律
 
@@ -59,7 +59,7 @@
 
 ```bash
 # 更新框架文件（保留项目自定义内容）
-bash ../codeflow-framework/tools/upgrade.sh
+bash ../h-codeflow-framework/tools/upgrade.sh
 ```
 
 ## 联系方式

@@ -95,6 +95,11 @@
 | UI 组件库 | Element UI 2.x |
 | 渲染模式 | SPA（`ssr: false`） |
 
+## UI 设计规范（引用）
+
+> UI 视觉规范（组件选型策略、设计 Token、组件使用规范、交互与反馈、页面模板、合规检查清单）由 **frontend-ui-design** Skill 统一管理。
+> 前端开发前必须先阅读 frontend-ui-design，再阅读本文件。
+
 ## 项目特定约定
 
 [补充项目的前端框架版本、微前端方案、自定义 UI 库等]

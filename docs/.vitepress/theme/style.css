@@ -31,3 +31,19 @@
 .vp-doc table td:first-child {
   white-space: nowrap;
 }
+
+/* ── 图片放大预览（medium-zoom） ── */
+[data-zoomable] {
+  cursor: zoom-in;
+  transition: transform 0.2s ease;
+}
+[data-zoomable]:hover {
+  transform: scale(1.02);
+}
+.medium-zoom-overlay {
+  z-index: 999;
+}
+.medium-zoom-image--opened {
+  z-index: 1000;
+  cursor: zoom-out;
+}

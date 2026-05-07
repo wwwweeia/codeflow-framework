@@ -43,7 +43,7 @@
 
   specs/
     SPEC-INDEX.md                  ← 所有业务域导航表 + Codemap 索引
-    feature-<name>/                ← 一个 Feature = 一个目录
+    YYYY-MM-DD_hh-mm_<feature-name>/ ← 一个 Feature = 一个目录
       01_requirement.md            ← PM 产出：业务需求（无技术细节）
       02_technical_design.md       ← Arch 产出：API + DB Schema + 组件设计
       03_impl_backend.md           ← Dev 产出：执行日志 + 自测证据
@@ -122,4 +122,4 @@ arch-agent 更新 domain-*.md
 | `.claude/specs/spec-template.md` | Spec 文件模板 |
 | `.claude/specs/SPEC-INDEX.md` | 所有业务域导航表，含 Codemap 链接 |
 
-<!-- codeflow-framework:core v1.7.1-20260420 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
+<!-- h-codeflow-framework:core v2.2.1-20260429 — DO NOT EDIT ABOVE THIS LINE, managed by upgrade.sh -->
