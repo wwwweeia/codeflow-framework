@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+
+jobs:
+  shellcheck:
+    name: Shell Script Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Syntax check (bash -n)
+        run: |
+          echo "=== Checking tools/*.sh ==="
+          for f in tools/*.sh; do
+            echo "  bash -n $f"
+            bash -n "$f"
+          done
+          echo "=== Checking templates/*.sh ==="
+          for f in templates/*.sh; do
+            echo "  bash -n $f"
+            bash -n "$f"
+          done
+          echo "=== Checking demo/reset-demo.sh ==="
+          bash -n demo/reset-demo.sh
+
+      - name: ShellCheck
+        run: |
+          shellcheck --severity=error \
+            tools/upgrade.sh \
+            tools/harvest.sh \
+            tools/release.sh \
+            tools/doctor.sh \
+            tools/sync-mirror.sh \
+            templates/init-project.sh \
+            templates/init-subproject.sh
+
+  docs-build:
+    name: Docs Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: docs/package.json
+
+      - name: Install dependencies
+        run: cd docs && npm ci
+
+      - name: Generate reference pages
+        run: cd docs && npm run docs:generate-ref
+
+      - name: Build docs
+        run: cd docs && npm run docs:build

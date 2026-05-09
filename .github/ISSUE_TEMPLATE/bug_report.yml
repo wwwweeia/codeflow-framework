@@ -1,0 +1,88 @@
+name: "\U0001F41B Bug 报告"
+description: 报告框架中的问题或异常行为
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你提交 Bug 报告！请尽量填写以下信息，帮助我们快速定位问题。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 清楚简洁地描述遇到的问题
+      placeholder: 执行 upgrade.sh 时报错……
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      description: 详细列出复现问题的步骤
+      placeholder: |
+        1. 在下游项目目录执行 `bash ../h-codeflow-framework/tools/upgrade.sh`
+        2. 看到报错信息 "..."
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 你期望发生什么？
+      placeholder: upgrade.sh 应正常完成，输出同步成功信息
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际发生了什么？请附上完整的错误信息或截图
+      placeholder: |
+        终端输出：
+        ```
+        ERROR: ...
+        ```
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 框架版本
+      description: "执行 `cat tools/VERSION` 查看"
+      placeholder: "2.3.1-20260507"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: 操作系统
+      options:
+        - macOS (ARM64/Apple Silicon)
+        - macOS (Intel)
+        - Linux (Ubuntu/Debian)
+        - Linux (CentOS/RHEL)
+        - Linux (其他)
+        - Windows (WSL)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 如有相关日志输出，请粘贴在此（会自动格式化为代码块）
+      render: shell
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 补充说明
+      description: 其他可能有助于理解问题的上下文信息

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "\U0001F4D6 文档站"
+    url: https://wwwweeia.github.io/codeflow-framework/
+    about: 查阅完整文档，了解框架使用方法
+  - name: "\u2753 常见问题"
+    url: https://wwwweeia.github.io/codeflow-framework/getting-started/faq
+    about: 查看 FAQ，也许你的问题已有解答
